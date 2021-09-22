@@ -13,7 +13,7 @@ export default function Dashboard({ code }) {
     <Container p="0" m="0" maxW="none" bgColor="#2D3748" h="100vh">
       <Container maxW="sm">
         <AddButton setCreateMatch={setCreateMatch} createMatch={createMatch} />
-        {createMatch ? <CreateMatch /> : <Grid />}
+        {createMatch ? <CreateMatch accessToken={accessToken} /> : <Grid />}
       </Container>
     </Container>
   );
