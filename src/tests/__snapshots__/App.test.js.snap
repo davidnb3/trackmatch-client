@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should take a snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="chakra-container css-2r6tym"
+  >
+    <a
+      class="chakra-link css-18i7yju"
+      href="https://accounts.spotify.com/authorize?client_id=cda05a1cfab241769542ed054c843d20&response_type=code&redirect_uri=http://localhost:3000&scope=streaming%20user-read-email%20user-read-private%20user-library-read%20user-library-modify%20user-read-playback-state%20user-modify-playback-state"
+    >
+      Login with Spotify
+    </a>
+  </div>
+</DocumentFragment>
+`;
