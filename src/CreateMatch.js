@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Container, Input, FormControl } from "@chakra-ui/react";
+import { Container, Input, VStack, Button } from "@chakra-ui/react";
 import SpotifyWebApi from "spotify-web-api-node";
-import axios from "axios";
 
 const spotifyApi = new SpotifyWebApi({
-  clientId: "cda05a1cfab241769542ed054c843d20",
+  clientId: "a20026b3038c4dac8c664ace9f0f4c8e",
 });
 
 export default function CreateMatch({ accessToken }) {
@@ -21,12 +20,8 @@ export default function CreateMatch({ accessToken }) {
     if (!search) return setSearchResults([]);
     if (!accessToken) return;
 
-    axios
-      .get(`https://api.spotify.com/v1/search?q=human%20error&type=track`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
+    spotifyApi
+      .searchTracks(search)
       .then((res) => {
         console.log(res);
       })
@@ -43,16 +38,23 @@ export default function CreateMatch({ accessToken }) {
       display="flex"
       justifyContent="right"
       bgColor="white"
-      h="calc(100vh - 88px)"
     >
-      <FormControl id="searchSpotify" isRequired>
-        <Input
-          type="search"
-          placeholder="Search Spotify"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </FormControl>
+      <form method="POST" style={{ width: "100%" }}>
+        <VStack w="100%">
+          <Input
+            type="search"
+            placeholder="Search Spotify"
+            autoComplete="off"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Input type="text" placeholder="Artist" autoComplete="off" />
+          <Input type="text" placeholder="Title" autoComplete="off" />
+          <Button type="submit" w="100%">
+            Submit
+          </Button>
+        </VStack>
+      </form>
     </Container>
   );
 }
