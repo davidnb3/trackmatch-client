@@ -44,7 +44,6 @@ export default function useAuth(code) {
         });
     }, (expiresIn - 60) * 1000);
     return () => clearInterval(interval);
-    // Sending refresh code to the server
   }, [refreshToken, expiresIn]);
 
   return accessToken;
