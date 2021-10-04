@@ -9,7 +9,7 @@ export default function useAuth(code) {
   //___SENDS AUTH CODE TO API TO GET BACK ACCESSTOKEN & REFRESHTOKEN
   useEffect(() => {
     axios
-      .post("http://localhost:3001/login", {
+      .post("http://localhost:3001/auth/login", {
         // AUTH code which is extracted from URL params
         code,
       })
@@ -32,7 +32,7 @@ export default function useAuth(code) {
     // Interval to always call API one minute before accessToken expires
     const interval = setInterval(() => {
       axios
-        .post("http://localhost:3001/refresh", {
+        .post("http://localhost:3001/auth/refresh", {
           refreshToken,
         })
         .then((res) => {
