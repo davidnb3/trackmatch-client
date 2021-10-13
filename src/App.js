@@ -1,13 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAuth from "./hooks/useAuth";
 import { Container } from "@chakra-ui/react";
 import Card from "./components/Card.js";
 import Header from "./components/Header.js";
 import AddCard from "./components/AddCard.js";
+import axios from "axios";
 
 function App({ code }) {
   const accessToken = useAuth(code);
   const [toggle, setToggle] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/tracks")
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <Container p="0" m="0" maxW="none" bgColor="#2D3748" h="100vh">
       <Header />

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Flex, VStack, Tooltip, Input, Button } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import SpotifyWebApi from "spotify-web-api-node";
+import axios from "axios";
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "a20026b3038c4dac8c664ace9f0f4c8e",
@@ -17,7 +18,19 @@ export default function CreateMatch({ accessToken, toggle, setToggle }) {
     secondArtist: "",
   });
 
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:3001/tracks", {
+        match,
+      })
+      .then(() => {
+        window.location = "/";
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   //___SET NEW ACCESSTOKEN ON API WHEN ACCESSTOKEN CHANGES
   useEffect(() => {
