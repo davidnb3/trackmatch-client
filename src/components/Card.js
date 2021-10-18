@@ -1,19 +1,28 @@
 import React from "react";
 import Draggable from "react-draggable";
-import { Box, Flex, Heading, VStack, Text, Tooltip } from "@chakra-ui/react";
-import { AddIcon, DragHandleIcon } from "@chakra-ui/icons";
+import { Box, Flex, Heading, VStack, Text, Image } from "@chakra-ui/react";
+import { DragHandleIcon, DeleteIcon } from "@chakra-ui/icons";
+import axios from "axios";
 
-export default function Grid({ toggle, setToggle }) {
-  const trackMatch = {
-    firstTitle: "Song Title",
-    firstArtist: "Artist Name",
-    secondTitle: "Song Title",
-    secondArtist: "Artist Name",
+export default function Grid({ toggle, setToggle, ...match }) {
+  const handleDelete = async (e) => {
+    const targetId = match._id;
+    console.log(targetId);
+    await axios
+      .delete("http://localhost:3001/tracks", {
+        params: { id: targetId },
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
     <>
-      <VStack spacing={6}>
+      <VStack mb="20px">
         <Draggable handle="#handle" position={{ x: 0, y: 0 }}>
           <Flex
             direction="row"
@@ -30,26 +39,20 @@ export default function Grid({ toggle, setToggle }) {
             }}
           >
             <VStack spacing={1} alignItems="baseline">
-              <Tooltip label="Add match" placement="top">
-                <Box
-                  d="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  h="120px"
-                  w="120px"
-                  maxW="120px"
-                  bgColor="rgba(247,250,252,0.2)"
-                  borderRadius="5px"
-                  onClick={() => {
-                    setToggle(!toggle);
-                  }}
-                  _hover={{
-                    backgroundColor: "rgba(247,250,252,0.5)",
-                  }}
-                >
-                  <AddIcon />
-                </Box>
-              </Tooltip>
+              <Box
+                d="flex"
+                alignItems="center"
+                justifyContent="center"
+                h="120px"
+                w="120px"
+                maxW="120px"
+                borderRadius="5px"
+              >
+                <Image
+                  src="http://localhost:3001/images/logo.png"
+                  alt="Segun Adebayo"
+                />
+              </Box>
               <Heading
                 color="#E2E8F0"
                 maxW="120px"
@@ -57,33 +60,28 @@ export default function Grid({ toggle, setToggle }) {
                 size="sm"
                 isTruncated
               >
-                {trackMatch.firstTitle}
+                {match.firstTitle}
               </Heading>
               <Text color="#E2E8F0" maxW="120px" fontSize="xs" isTruncated>
-                {trackMatch.firstArtist}
+                {match.firstArtist}
               </Text>
             </VStack>
             <VStack spacing={1} alignItems="baseline">
-              <Tooltip label="Add match" placement="top">
-                <Box
-                  d="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  h="120px"
-                  w="120px"
-                  maxW="120px"
-                  bgColor="rgba(247,250,252,0.2)"
-                  borderRadius="5px"
-                  onClick={() => {
-                    setToggle(!toggle);
-                  }}
-                  _hover={{
-                    backgroundColor: "rgba(247,250,252,0.5)",
-                  }}
-                >
-                  <AddIcon />
-                </Box>
-              </Tooltip>
+              <Box
+                d="flex"
+                alignItems="center"
+                justifyContent="center"
+                h="120px"
+                w="120px"
+                maxW="120px"
+                borderRadius="5px"
+              >
+                <Image
+                  src="http://localhost:3001/images/logo.png"
+                  alt="Segun Adebayo"
+                />
+              </Box>
+
               <Heading
                 color="#E2E8F0"
                 maxW="120px"
@@ -91,12 +89,21 @@ export default function Grid({ toggle, setToggle }) {
                 size="sm"
                 isTruncated
               >
-                {trackMatch.firstTitle}
+                {match.firstTitle}
               </Heading>
               <Text color="#E2E8F0" maxW="120px" fontSize="xs" isTruncated>
-                {trackMatch.firstArtist}
+                {match.firstArtist}
               </Text>
             </VStack>
+            <DeleteIcon
+              cursor="pointer"
+              position="absolute"
+              id={match._id}
+              left="324px"
+              w="20px"
+              h="80px"
+              onClick={handleDelete}
+            />
             <DragHandleIcon
               cursor="move"
               id="handle"
