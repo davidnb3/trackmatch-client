@@ -5,7 +5,7 @@ import { DragHandleIcon, DeleteIcon } from "@chakra-ui/icons";
 import axios from "axios";
 
 export default function Grid({ toggle, setToggle, ...match }) {
-  const handleDelete = async (e) => {
+  const handleDelete = async () => {
     const targetId = match._id;
     console.log(targetId);
     await axios

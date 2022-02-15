@@ -3,7 +3,7 @@ import useAuth from "./hooks/useAuth";
 import { Container, Button } from "@chakra-ui/react";
 import Card from "./components/Card.js";
 import Header from "./components/Header.js";
-import AddCard from "./components/AddCard.js";
+import CreateMatch from "./components/CreateMatch.js";
 import axios from "axios";
 
 function App({ code }) {
@@ -43,19 +43,21 @@ function App({ code }) {
         >
           Add New Match
         </Button>
-        {!toggle ? (
-          //___Show trackmatches or AddCard component
-          matches.map((match) => (
-            <Card
-              toggle={toggle}
-              setToggle={setToggle}
-              key={match._id}
-              {...match}
-            />
-          ))
-        ) : (
-          <AddCard setToggle={setToggle} toggle={toggle} />
+        {toggle && (
+          <CreateMatch
+            setToggle={setToggle}
+            toggle={toggle}
+            accessToken={accessToken}
+          />
         )}
+        {matches.map((match) => (
+          <Card
+            toggle={toggle}
+            setToggle={setToggle}
+            key={match._id}
+            {...match}
+          />
+        ))}
       </Container>
     </Container>
   );
