@@ -8,11 +8,20 @@ const spotifyApi = new SpotifyWebApi({
 });
 
 export default function CreateMatch({ accessToken, toggle, setToggle }) {
-  const [firstSearch, setFirstSearch] = useState("");
-  const [secondSearch, setSecondSearch] = useState("");
-  const [firstSearchResults, setFirstSearchResults] = useState([]);
-  console.log(firstSearchResults);
-  const [secondSearchResults, setSecondSearchResults] = useState([]);
+  // const [firstSearch, setFirstSearch] = useState("");
+  // const [secondSearch, setSecondSearch] = useState("");
+  // const [firstSearchResults, setFirstSearchResults] = useState([]);
+  // console.log(firstSearchResults);
+  // const [secondSearchResults, setSecondSearchResults] = useState([]);
+
+  const [search, setSearch] = useState({ firstSearch: "", secondSearch: "" });
+
+  const [searchResults, setSearchResults] = useState({
+    firstSearchResults: [],
+    secondSearchResults: [],
+  });
+
+  console.log(searchResults.firstSearchResults);
 
   // const handleSubmit = (e) => {
   //   e.preventDefault();
@@ -28,6 +37,30 @@ export default function CreateMatch({ accessToken, toggle, setToggle }) {
   //     });
   // };
 
+  const searchTracks = (cancel, search) => {
+    return spotifyApi
+      .searchTracks(search)
+      .then((res) => {
+        // Cancel searchResults if we type characters before its execution
+        if (cancel) return;
+
+        const trackList = res.body.tracks.items.map((track) => {
+          const smallestAlbumImage = track.album.images.reduce((smallest, image) => {
+            if (smallest.height < image.height) return smallest;
+            return image;
+          }, track.album.images[0]);
+          return {
+            artist: track.artists[0].name,
+            title: track.name,
+            uri: track.uri,
+            albumUrl: smallestAlbumImage.url,
+          };
+        });
+        return trackList;
+      })
+      .catch((err) => console.log(err));
+  };
+
   //___SET NEW ACCESSTOKEN ON API WHEN ACCESSTOKEN CHANGES
   useEffect(() => {
     if (!accessToken) return;
@@ -36,34 +69,37 @@ export default function CreateMatch({ accessToken, toggle, setToggle }) {
 
   //___SEARCH FOR THE FIRST TRACK
   useEffect(() => {
-    if (!firstSearch) return setFirstSearchResults([]);
+    const isSearchEmpty = Object.values(search).every(
+      (prop) => prop === null || prop === "" || prop === undefined
+    );
+    if (isSearchEmpty) return;
     if (!accessToken) return;
     let cancel = false;
 
-    spotifyApi.searchTracks(firstSearch).then((res) => {
-      // Cancel setFirstSearchResults if one types characters before     its execution
-      if (cancel) return;
-      setFirstSearchResults(
-        res.body.tracks.items.map((track) => {
-          const smallestAlbumImage = track.album.images.reduce(
-            (smallest, image) => {
-              if (smallest.height < image.height) return smallest;
-              return image;
-            },
-            track.album.images[0]
-          );
-          return {
-            artist: track.artists[0].name,
-            title: track.name,
-            uri: track.uri,
-            albumUrl: smallestAlbumImage.url,
-          };
-        })
-      );
+    setSearchResults({
+      firstSearchResults: searchTracks(cancel, search.firstSearch),
+      secondSearchResults: searchResults.secondSearchResults,
     });
 
     return () => (cancel = true);
-  }, [firstSearch, accessToken]);
+  }, [search.firstSearch, accessToken]);
+
+  //___SEARCH FOR THE SECOND TRACK
+  useEffect(() => {
+    const isSearchEmpty = Object.values(search).every(
+      (prop) => prop === null || prop === "" || prop === undefined
+    );
+    if (isSearchEmpty) return;
+    if (!accessToken) return;
+    let cancel = false;
+
+    setSearchResults({
+      firstSearchResults: searchResults.firstSearchResults,
+      secondSearchResults: searchTracks(cancel, search.secondSearch),
+    });
+
+    return () => (cancel = true);
+  }, [search.secondSearch, accessToken]);
 
   return (
     <Box
@@ -84,15 +120,18 @@ export default function CreateMatch({ accessToken, toggle, setToggle }) {
           color="#E2E8F0"
           placeholder="Search first Track"
           size="xs"
-          value={firstSearch}
-          onChange={({ target }) => setFirstSearch(target.value)}
+          value={search.firstSearch}
+          onChange={({ target }) =>
+            setSearch({ firstSearch: target.value, secondSearch: search.secondSearch })
+          }
         />
         <Input
           color="#E2E8F0"
           placeholder="Search second Track"
           size="xs"
-          value={secondSearch}
-          onChange={({ target }) => setSecondSearch(target.value)}
+          onChange={({ target }) =>
+            setSearch({ firstSearch: search.firstSearch, secondSearch: target.value })
+          }
         />
       </VStack>
 
