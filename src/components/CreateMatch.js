@@ -1,27 +1,26 @@
-import { useState, useEffect } from "react";
-import { Box, Flex, VStack, Tooltip, Input, Button } from "@chakra-ui/react";
+import { useState, useEffect, useContext, useRef } from "react";
+import { Input, Button } from "@chakra-ui/react";
 import SpotifyWebApi from "spotify-web-api-node";
+import TrackSearchResult from "./TrackSearchResult";
+import { TokenContext } from "../store/TokenContext";
+import "./CreateMatch.css";
 import axios from "axios";
 
 const spotifyApi = new SpotifyWebApi({
   clientId: "a20026b3038c4dac8c664ace9f0f4c8e",
 });
 
-export default function CreateMatch({ accessToken, toggle, setToggle }) {
-  // const [firstSearch, setFirstSearch] = useState("");
-  // const [secondSearch, setSecondSearch] = useState("");
-  // const [firstSearchResults, setFirstSearchResults] = useState([]);
-  // console.log(firstSearchResults);
-  // const [secondSearchResults, setSecondSearchResults] = useState([]);
-
+export default function CreateMatch({ toggle, setToggle }) {
+  const accessToken = useContext(TokenContext);
   const [search, setSearch] = useState({ firstSearch: "", secondSearch: "" });
-
   const [searchResults, setSearchResults] = useState({
     firstSearchResults: [],
     secondSearchResults: [],
   });
-
-  console.log(searchResults.firstSearchResults);
+  const [selectedTracks, setSelectedTracks] = useState({
+    firstSelectedTrack: null,
+    secondSelectedTrack: null,
+  });
 
   // const handleSubmit = (e) => {
   //   e.preventDefault();
@@ -37,28 +36,18 @@ export default function CreateMatch({ accessToken, toggle, setToggle }) {
   //     });
   // };
 
-  const searchTracks = (cancel, search) => {
-    return spotifyApi
-      .searchTracks(search)
-      .then((res) => {
-        // Cancel searchResults if we type characters before its execution
-        if (cancel) return;
+  const selectFirstTrack = (track) => {
+    setSelectedTracks({
+      firstSelectedTrack: track,
+      secondSelectedTrack: selectedTracks.secondSelectedTrack,
+    });
+  };
 
-        const trackList = res.body.tracks.items.map((track) => {
-          const smallestAlbumImage = track.album.images.reduce((smallest, image) => {
-            if (smallest.height < image.height) return smallest;
-            return image;
-          }, track.album.images[0]);
-          return {
-            artist: track.artists[0].name,
-            title: track.name,
-            uri: track.uri,
-            albumUrl: smallestAlbumImage.url,
-          };
-        });
-        return trackList;
-      })
-      .catch((err) => console.log(err));
+  const selectSecondTrack = (track) => {
+    setSelectedTracks({
+      firstSelectedTrack: selectedTracks.firstSelectedTrack,
+      secondSelectedTrack: track,
+    });
   };
 
   //___SET NEW ACCESSTOKEN ON API WHEN ACCESSTOKEN CHANGES
@@ -75,11 +64,7 @@ export default function CreateMatch({ accessToken, toggle, setToggle }) {
     if (isSearchEmpty) return;
     if (!accessToken) return;
     let cancel = false;
-
-    setSearchResults({
-      firstSearchResults: searchTracks(cancel, search.firstSearch),
-      secondSearchResults: searchResults.secondSearchResults,
-    });
+    getFirstTrackList(cancel);
 
     return () => (cancel = true);
   }, [search.firstSearch, accessToken]);
@@ -92,49 +77,93 @@ export default function CreateMatch({ accessToken, toggle, setToggle }) {
     if (isSearchEmpty) return;
     if (!accessToken) return;
     let cancel = false;
-
-    setSearchResults({
-      firstSearchResults: searchResults.firstSearchResults,
-      secondSearchResults: searchTracks(cancel, search.secondSearch),
-    });
+    getSecondTrackList(cancel);
 
     return () => (cancel = true);
   }, [search.secondSearch, accessToken]);
 
   return (
-    <Box
-      px={9}
-      py={5}
-      bgColor="rgba(237,242,247, 0.1)"
-      minW="290px"
-      w="100%"
-      mb="20px"
-      position="relative"
-      borderRadius="10px"
-      _hover={{
-        backgroundColor: "rgba(237,242,247, 0.2)",
-      }}
-    >
-      <VStack spacing={1} alignItems="baseline">
+    <div className="create-match">
+      {selectedTracks.firstSelectedTrack ? (
+        <>
+          <img
+            className="track-image"
+            src={selectedTracks.firstSelectedTrack.albumUrl}
+            alt="album-cover"
+          />
+          <div>
+            <div>{selectedTracks.firstSelectedTrack.title}</div>
+            <div>{selectedTracks.firstSelectedTrack.artist}</div>
+          </div>
+        </>
+      ) : (
         <Input
           color="#E2E8F0"
           placeholder="Search first Track"
-          size="xs"
           value={search.firstSearch}
+          mb="10px"
           onChange={({ target }) =>
             setSearch({ firstSearch: target.value, secondSearch: search.secondSearch })
           }
         />
+      )}
+      {search.firstSearch && !selectedTracks.firstSelectedTrack ? (
+        <div className="track-result-container">
+          {searchResults.firstSearchResults?.map((track) => (
+            <TrackSearchResult key={track.uri}>
+              <div className="track-result" onClick={() => selectFirstTrack(track)}>
+                <img className="track-image" src={track.albumUrl} alt="album-cover" />
+                <div>
+                  <div>{track.title}</div>
+                  <div>{track.artist}</div>
+                </div>
+              </div>
+            </TrackSearchResult>
+          ))}
+        </div>
+      ) : (
+        <div></div>
+      )}
+      {selectedTracks.secondSelectedTrack ? (
+        <>
+          <img
+            className="track-image"
+            src={selectedTracks.secondSelectedTrack.albumUrl}
+            alt="album-cover"
+          />
+          <div>
+            <div>{selectedTracks.secondSelectedTrack.title}</div>
+            <div>{selectedTracks.secondSelectedTrack.artist}</div>
+          </div>
+        </>
+      ) : (
         <Input
           color="#E2E8F0"
           placeholder="Search second Track"
-          size="xs"
+          mb="10px"
+          value={search.secondSearch}
           onChange={({ target }) =>
             setSearch({ firstSearch: search.firstSearch, secondSearch: target.value })
           }
         />
-      </VStack>
-
+      )}
+      {search.secondSearch && !selectedTracks.secondSelectedTrack ? (
+        <div className="track-result-container">
+          {searchResults.secondSearchResults?.map((track) => (
+            <TrackSearchResult key={track.uri}>
+              <div className="track-result" onClick={() => selectSecondTrack(track)}>
+                <img className="track-image" src={track.albumUrl} alt="album-cover" />
+                <div>
+                  <div>{track.title}</div>
+                  <div>{track.artist}</div>
+                </div>
+              </div>
+            </TrackSearchResult>
+          ))}
+        </div>
+      ) : (
+        <div></div>
+      )}
       <Button colorScheme="gray" mt={3} mb={1} type="submit" size="xs" w="100%">
         Submit
       </Button>
@@ -148,6 +177,56 @@ export default function CreateMatch({ accessToken, toggle, setToggle }) {
       >
         Cancel
       </Button>
-    </Box>
+    </div>
   );
+
+  // Spotify API Call for first track
+  function getFirstTrackList(cancel) {
+    spotifyApi.searchTracks(search.firstSearch).then((res) => {
+      // Cancel searchResults if we type characters before its execution
+      if (cancel) return;
+
+      const trackList = res.body.tracks.items.map((track) => {
+        const smallestAlbumImage = track.album.images.reduce((smallest, image) => {
+          if (smallest.height < image.height) return smallest;
+          return image;
+        }, track.album.images[0]);
+        return {
+          artist: track.artists[0].name,
+          title: track.name,
+          uri: track.uri,
+          albumUrl: smallestAlbumImage.url,
+        };
+      });
+      setSearchResults({
+        firstSearchResults: trackList,
+        secondSearchResults: searchResults.secondSearchResults,
+      });
+    });
+  }
+
+  // Spotify API Call for second track
+  function getSecondTrackList(cancel) {
+    spotifyApi.searchTracks(search.secondSearch).then((res) => {
+      // Cancel searchResults if we type characters before its execution
+      if (cancel) return;
+
+      const trackList = res.body.tracks.items.map((track) => {
+        const smallestAlbumImage = track.album.images.reduce((smallest, image) => {
+          if (smallest.height < image.height) return smallest;
+          return image;
+        }, track.album.images[0]);
+        return {
+          artist: track.artists[0].name,
+          title: track.name,
+          uri: track.uri,
+          albumUrl: smallestAlbumImage.url,
+        };
+      });
+      setSearchResults({
+        firstSearchResults: searchResults.firstSearchResults,
+        secondSearchResults: trackList,
+      });
+    });
+  }
 }

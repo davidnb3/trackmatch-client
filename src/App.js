@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import useAuth from "./hooks/useAuth";
-import { Container, Button } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import Card from "./components/Card.js";
 import Header from "./components/Header.js";
 import CreateMatch from "./components/CreateMatch.js";
+import { TokenContext } from "./store/TokenContext";
+import "./App.css";
 import axios from "axios";
 
 function App({ code }) {
@@ -23,19 +25,12 @@ function App({ code }) {
   }, []);
 
   return (
-    <Container
-      p="0"
-      pb={3}
-      m="0"
-      maxW="none"
-      bgColor="#2D3748"
-      minH="100vh"
-      h="100%"
-    >
+    <div className="app">
       <Header />
-      <Container maxW="sm">
+      <div className="app-content">
         <Button
           w="100%"
+          maxW="300px"
           mb="20px"
           onClick={() => {
             setToggle(!toggle);
@@ -43,23 +38,14 @@ function App({ code }) {
         >
           Add New Match
         </Button>
-        {toggle && (
-          <CreateMatch
-            setToggle={setToggle}
-            toggle={toggle}
-            accessToken={accessToken}
-          />
-        )}
-        {matches.map((match) => (
-          <Card
-            toggle={toggle}
-            setToggle={setToggle}
-            key={match._id}
-            {...match}
-          />
-        ))}
-      </Container>
-    </Container>
+        <TokenContext.Provider value={accessToken}>
+          {toggle && <CreateMatch setToggle={setToggle} toggle={toggle} />}
+          {matches.map((match) => (
+            <Card toggle={toggle} setToggle={setToggle} key={match._id} {...match} />
+          ))}
+        </TokenContext.Provider>
+      </div>
+    </div>
   );
 }
 
