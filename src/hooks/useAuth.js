@@ -5,7 +5,6 @@ export default function useAuth(code) {
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
   const [expiresIn, setExpiresIn] = useState();
-  console.log(expiresIn);
 
   //___SENDS AUTH CODE TO API TO GET BACK ACCESSTOKEN & REFRESHTOKEN
   useEffect(() => {
