@@ -1,0 +1,20 @@
+.create-match {
+  padding: 10px 15px;
+  background-color: rgba(237, 242, 247, 0.1);
+  min-width: 280px;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.create-match:hover {
+  background-color: rgba(237, 242, 247, 0.2);
+}
+
+.track-result-container {
+  position: absolute;
+  z-index: 100;
+  background: white;
+  width: 100%;
+  max-width: 280px;
+}

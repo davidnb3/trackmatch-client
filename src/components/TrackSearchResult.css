@@ -1,0 +1,11 @@
+.track-result {
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.track-image {
+  height: 64px;
+  width: 64px;
+}
