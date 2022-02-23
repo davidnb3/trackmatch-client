@@ -43,10 +43,10 @@ export default function Card({ toggle, setToggle, ...match }) {
             </VStack>
             <VStack spacing={1} alignItems="baseline" w="100%">
               <Heading color="#E2E8F0" as="h3" size="sm">
-                {match.firstTitle}
+                {match.secondTitle}
               </Heading>
               <Text color="#E2E8F0" fontSize="xs">
-                {match.firstArtist}
+                {match.secondArtist}
               </Text>
             </VStack>
           </VStack>
