@@ -22,19 +22,20 @@ export default function CreateMatch({ toggle, setToggle }) {
     secondSelectedTrack: null,
   });
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   axios
-  //     .post("http://localhost:3001/tracks", {
-  //       match,
-  //     })
-  //     .then(() => {
-  //       window.location = "/";
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const match = selectedTracks;
+    axios
+      .post("http://localhost:3001/tracks", {
+        match,
+      })
+      .then(() => {
+        window.location = "/";
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const selectFirstTrack = (track) => {
     setSelectedTracks({
@@ -85,9 +86,9 @@ export default function CreateMatch({ toggle, setToggle }) {
   return (
     <div className="create-match">
       {selectedTracks.firstSelectedTrack ? (
-        <>
+        <div className="selected-track">
           <img
-            className="track-image"
+            className="album-cover"
             src={selectedTracks.firstSelectedTrack.albumUrl}
             alt="album-cover"
           />
@@ -95,7 +96,7 @@ export default function CreateMatch({ toggle, setToggle }) {
             <div>{selectedTracks.firstSelectedTrack.title}</div>
             <div>{selectedTracks.firstSelectedTrack.artist}</div>
           </div>
-        </>
+        </div>
       ) : (
         <Input
           color="#E2E8F0"
@@ -125,9 +126,9 @@ export default function CreateMatch({ toggle, setToggle }) {
         <div></div>
       )}
       {selectedTracks.secondSelectedTrack ? (
-        <>
+        <div className="selected-track">
           <img
-            className="track-image"
+            className="album-cover"
             src={selectedTracks.secondSelectedTrack.albumUrl}
             alt="album-cover"
           />
@@ -135,7 +136,7 @@ export default function CreateMatch({ toggle, setToggle }) {
             <div>{selectedTracks.secondSelectedTrack.title}</div>
             <div>{selectedTracks.secondSelectedTrack.artist}</div>
           </div>
-        </>
+        </div>
       ) : (
         <Input
           color="#E2E8F0"
@@ -164,7 +165,14 @@ export default function CreateMatch({ toggle, setToggle }) {
       ) : (
         <div></div>
       )}
-      <Button colorScheme="gray" mt={3} mb={1} type="submit" size="xs" w="100%">
+      <Button
+        colorScheme="gray"
+        mb={1}
+        type="submit"
+        size="xs"
+        w="100%"
+        onClick={(e) => handleSubmit(e)}
+      >
         Submit
       </Button>
       <Button
