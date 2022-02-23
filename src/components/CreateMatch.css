@@ -18,3 +18,12 @@
   width: 100%;
   max-width: 280px;
 }
+
+.selected-track {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.album-cover {
+  margin-right: 10px;
+}
