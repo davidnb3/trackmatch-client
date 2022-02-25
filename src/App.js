@@ -1,7 +1,7 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect } from "react";
 import useAuth from "./hooks/useAuth";
 import { Button } from "@chakra-ui/react";
-import Card from "./components/Card.js";
+import TrackMatch from "./components/TrackMatch.js";
 import Header from "./components/Header.js";
 import CreateMatch from "./components/CreateMatch.js";
 import { TokenContext } from "./store/TokenContext";
@@ -41,7 +41,7 @@ function App({ code }) {
         <TokenContext.Provider value={accessToken}>
           {toggle && <CreateMatch setToggle={setToggle} toggle={toggle} />}
           {matches.map((match) => (
-            <Card toggle={toggle} setToggle={setToggle} key={match._id} {...match} />
+            <TrackMatch toggle={toggle} setToggle={setToggle} key={match._id} {...match} />
           ))}
         </TokenContext.Provider>
       </div>
