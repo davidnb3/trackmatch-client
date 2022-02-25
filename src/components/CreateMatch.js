@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Input, Button } from "@chakra-ui/react";
 import SpotifyWebApi from "spotify-web-api-node";
 import TrackSearchResult from "./TrackSearchResult";
@@ -21,6 +21,7 @@ export default function CreateMatch({ toggle, setToggle }) {
     firstSelectedTrack: null,
     secondSelectedTrack: null,
   });
+  console.log(selectedTracks);
 
   const handleSubmit = (e) => {
     e.preventDefault();
