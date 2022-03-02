@@ -1,8 +1,9 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useReducer } from "react";
 import { Input, Button } from "@chakra-ui/react";
 import SpotifyWebApi from "spotify-web-api-node";
 import TrackSearchResult from "./TrackSearchResult";
 import { TokenContext } from "../store/TokenContext";
+import { reducer, initialState } from "../store/CreateMatchStateReducer";
 import "./CreateMatch.css";
 import axios from "axios";
 
@@ -12,7 +13,11 @@ const spotifyApi = new SpotifyWebApi({
 
 export default function CreateMatch({ toggle, setToggle }) {
   const accessToken = useContext(TokenContext);
-  const [search, setSearch] = useState({ firstSearch: "", secondSearch: "" });
+  const [state, dispatch] = useReducer(reducer, initialState);
+  console.log("state", state);
+
+  // const [search, setSearch] = useState({ firstSearch: "", secondSearch: "" });
+  // console.log("search", search);
   const [searchResults, setSearchResults] = useState({
     firstSearchResults: [],
     secondSearchResults: [],
@@ -21,14 +26,21 @@ export default function CreateMatch({ toggle, setToggle }) {
     firstSelectedTrack: null,
     secondSelectedTrack: null,
   });
-  console.log(selectedTracks);
+
+  const handleSearch = (e) => {
+    dispatch({
+      type: "HANDLE SEARCH",
+      field: e.target.name,
+      payload: e.target.value,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const match = selectedTracks;
+    const trackMatch = selectedTracks;
     axios
       .post("http://localhost:3001/tracks", {
-        match,
+        trackMatch,
       })
       .then(() => {
         window.location = "/";
@@ -60,7 +72,7 @@ export default function CreateMatch({ toggle, setToggle }) {
 
   //___SEARCH FOR THE FIRST TRACK
   useEffect(() => {
-    const isSearchEmpty = Object.values(search).every(
+    const isSearchEmpty = Object.values(state.search).every(
       (prop) => prop === null || prop === "" || prop === undefined
     );
     if (isSearchEmpty) return;
@@ -69,11 +81,11 @@ export default function CreateMatch({ toggle, setToggle }) {
     getFirstTrackList(cancel);
 
     return () => (cancel = true);
-  }, [search.firstSearch, accessToken]);
+  }, [state.search.firstSearch, accessToken]);
 
   //___SEARCH FOR THE SECOND TRACK
   useEffect(() => {
-    const isSearchEmpty = Object.values(search).every(
+    const isSearchEmpty = Object.values(state.search).every(
       (prop) => prop === null || prop === "" || prop === undefined
     );
     if (isSearchEmpty) return;
@@ -82,7 +94,7 @@ export default function CreateMatch({ toggle, setToggle }) {
     getSecondTrackList(cancel);
 
     return () => (cancel = true);
-  }, [search.secondSearch, accessToken]);
+  }, [state.search.secondSearch, accessToken]);
 
   return (
     <div className="create-match">
@@ -102,14 +114,13 @@ export default function CreateMatch({ toggle, setToggle }) {
         <Input
           color="#E2E8F0"
           placeholder="Search first Track"
-          value={search.firstSearch}
+          name="firstSearch"
+          value={state.search.firstSearch}
           mb="10px"
-          onChange={({ target }) =>
-            setSearch({ firstSearch: target.value, secondSearch: search.secondSearch })
-          }
+          onChange={(e) => handleSearch(e)}
         />
       )}
-      {search.firstSearch && !selectedTracks.firstSelectedTrack ? (
+      {state.search.firstSearch && !selectedTracks.firstSelectedTrack ? (
         <div className="track-result-container">
           {searchResults.firstSearchResults?.map((track) => (
             <TrackSearchResult key={track.uri}>
@@ -142,14 +153,13 @@ export default function CreateMatch({ toggle, setToggle }) {
         <Input
           color="#E2E8F0"
           placeholder="Search second Track"
+          name="secondSearch"
           mb="10px"
-          value={search.secondSearch}
-          onChange={({ target }) =>
-            setSearch({ firstSearch: search.firstSearch, secondSearch: target.value })
-          }
+          value={state.search.secondSearch}
+          onChange={(e) => handleSearch(e)}
         />
       )}
-      {search.secondSearch && !selectedTracks.secondSelectedTrack ? (
+      {state.search.secondSearch && !selectedTracks.secondSelectedTrack ? (
         <div className="track-result-container">
           {searchResults.secondSearchResults?.map((track) => (
             <TrackSearchResult key={track.uri}>
@@ -191,7 +201,7 @@ export default function CreateMatch({ toggle, setToggle }) {
 
   // Spotify API Call for first track
   function getFirstTrackList(cancel) {
-    spotifyApi.searchTracks(search.firstSearch).then((res) => {
+    spotifyApi.searchTracks(state.search.firstSearch).then((res) => {
       // Cancel searchResults if we type characters before its execution
       if (cancel) return;
 
@@ -216,7 +226,7 @@ export default function CreateMatch({ toggle, setToggle }) {
 
   // Spotify API Call for second track
   function getSecondTrackList(cancel) {
-    spotifyApi.searchTracks(search.secondSearch).then((res) => {
+    spotifyApi.searchTracks(state.search.secondSearch).then((res) => {
       // Cancel searchResults if we type characters before its execution
       if (cancel) return;
 
