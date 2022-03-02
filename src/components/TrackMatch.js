@@ -3,9 +3,9 @@ import Draggable from "react-draggable";
 import { Heading, Text } from "@chakra-ui/react";
 import { DragHandleIcon, DeleteIcon } from "@chakra-ui/icons";
 import axios from "axios";
-import "./Card.css";
+import "./TrackMatch.css";
 
-export default function Card({ toggle, setToggle, ...match }) {
+export default function TrackMatch({ toggle, setToggle, ...match }) {
   const handleDelete = async () => {
     const targetId = match._id;
     console.log(targetId);
@@ -26,7 +26,7 @@ export default function Card({ toggle, setToggle, ...match }) {
       <div className="track-match">
         <div>
           <div className="track-data">
-            <img src={match.firstCoverImg} alt="album cover" />
+            <img src={match.firstCoverImg} className="album-cover" alt="album cover" />
             <div>
               <Heading color="#E2E8F0" as="h3" size="sm">
                 {match.firstTitle}
@@ -37,7 +37,7 @@ export default function Card({ toggle, setToggle, ...match }) {
             </div>
           </div>
           <div className="track-data">
-            <img src={match.secondCoverImg} alt="album cover" />
+            <img src={match.secondCoverImg} className="album-cover" alt="album cover" />
             <div>
               <Heading color="#E2E8F0" as="h3" size="sm">
                 {match.secondTitle}
