@@ -63,3 +63,46 @@ export const madeForYouAlbums = [
       "https://images.unsplash.com/photo-1490300472339-79e4adc6be4a?w=300&dpr=2&q=80",
   },
 ];
+
+export const trackMatches = [
+  {
+    trackName1: "Another Night",
+    artist1: "Kosmical",
+    cover1:
+      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    trackName2: "Another Night",
+    artist2: "Kosmical",
+    cover2:
+      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+  },
+  {
+    trackName1: "Another Weib",
+    artist1: "Kosmical",
+    cover1:
+      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    trackName2: "Another Weib",
+    artist2: "Kosmical",
+    cover2:
+      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+  },
+  {
+    trackName1: "Another Leid",
+    artist1: "Kosmical",
+    cover1:
+      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    trackName2: "Another Leid",
+    artist2: "Kosmical",
+    cover2:
+      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+  },
+  {
+    trackName1: "Another HAHA",
+    artist1: "Kosmical",
+    cover1:
+      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    trackName2: "Another HAHA",
+    artist2: "Kosmical",
+    cover2:
+      "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+  },
+];
