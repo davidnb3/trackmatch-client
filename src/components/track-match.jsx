@@ -22,58 +22,40 @@ import {
 
 import { playlists } from "../data/playlists";
 
-export function TrackMatch({
-  album1,
-  album2,
-  aspectRatio = "portrait",
-  width,
-  height,
-  className,
-  ...props
-}) {
+export function TrackMatch({ trackMatch, className, ...props }) {
+  const tracks = [];
+  for (let i = 1; i <= Object.keys(trackMatch).length / 3; i++) {
+    tracks.push({
+      name: trackMatch[`trackName${i}`],
+      artist: trackMatch[`artist${i}`],
+      cover: trackMatch[`cover${i}`],
+    });
+  }
+
   return (
-    <div className={cn("space-y-3", className)} {...props}>
+    <div className={cn("", className)} {...props}>
       <ContextMenu>
         <ContextMenuTrigger>
-          <Card className="w-full">
-            <div className="flex space-x-4">
-              <CardContent>
-                <div className="overflow-hidden rounded-md">
+          <Card className="inline-flex justify-center">
+            {tracks.map((album, index) => (
+              <CardContent key={index} className="space-y-3">
+                <div className="overflow-hidden rounded-md w-[100px]">
                   <img
-                    src={album1.cover}
-                    alt={album1.name}
-                    width={width}
-                    height={height}
-                    className={cn(
-                      "h-auto w-auto object-cover transition-all hover:scale-105",
-                      aspectRatio === "portrait"
-                        ? "aspect-[3/4]"
-                        : "aspect-square"
-                    )}
+                    src={album.cover}
+                    alt={album.name}
+                    className={cn("hover:scale-105", "aspect-square")}
                   />
                 </div>
-                <CardTitle>{album1.name}</CardTitle>
-                <CardDescription>{album1.artist}</CardDescription>
-              </CardContent>
-              <CardContent>
-                <div className="overflow-hidden rounded-md">
-                  <img
-                    src={album2.cover}
-                    alt={album2.name}
-                    width={width}
-                    height={height}
-                    className={cn(
-                      "h-auto w-auto object-cover transition-all hover:scale-105",
-                      aspectRatio === "portrait"
-                        ? "aspect-[3/4]"
-                        : "aspect-square"
-                    )}
-                  />
+                <div className="space-y-1 text-sm w-[100px]">
+                  <h3 className="font-medium leading-none overflow-hidden text-ellipsis text-nowrap">
+                    {album.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
+                    {album.artist}
+                  </p>
                 </div>
-                <CardTitle>{album2.name}</CardTitle>
-                <CardDescription>{album2.artist}</CardDescription>
               </CardContent>
-            </div>
+            ))}
           </Card>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-40">
