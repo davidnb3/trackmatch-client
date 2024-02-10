@@ -54,7 +54,11 @@ export default function Browse() {
                     <Separator className="my-4" />
                     <div className="flex flex-wrap justify-start gap-4">
                       {trackMatches.map((trackMatch, index) => (
-                        <TrackMatchCard key={index} trackMatch={trackMatch} />
+                        <TrackMatchCard
+                          key={index}
+                          trackMatch={trackMatch}
+                          id={index}
+                        />
                       ))}
                     </div>
                   </TabsContent>
@@ -82,7 +86,11 @@ export default function Browse() {
                           style={{ breakInside: "avoid", marginBottom: "1rem" }}
                           key={index}
                         >
-                          <TrackMatchList key={index} trackMatch={trackMatch} />
+                          <TrackMatchList
+                            key={index}
+                            trackMatch={trackMatch}
+                            id={index}
+                          />
                         </div>
                       ))}
                     </div>
