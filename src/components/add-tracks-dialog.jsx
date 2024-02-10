@@ -7,13 +7,30 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { PlusCircledIcon, MinusCircledIcon } from "@radix-ui/react-icons";
 
 export function AddTracks() {
+  const [tracks, setTracks] = useState([{}, {}]);
+
+  const addTrack = () => {
+    setTracks([...tracks, {}]);
+  };
+
+  const resetTracks = () => {
+    setTracks([{}, {}]); // Reset to two tracks
+  };
+
+  const removeTrack = () => {
+    if (tracks.length > 2) {
+      setTracks(tracks.slice(0, -1)); // Remove the last track
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -33,70 +50,47 @@ export function AddTracks() {
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-6 items-center gap-4">
-            <span className="text-left col-span-3 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Track Name
-            </span>
-            <span className="text-left col-span-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Artist
-            </span>
-            <span className="text-left col-span-1 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Key
-            </span>
-          </div>
-          <div className="grid grid-cols-6 items-center gap-4">
-            <Input
-              id="trackName1"
-              type="text"
-              placeholder="Another Night"
-              className="col-span-3"
-              aria-label="track name 1"
+          {tracks.map((track, index) => (
+            <div key={index} className="grid grid-cols-6 items-center gap-4">
+              <Input
+                id={`trackName${index + 1}`}
+                type="text"
+                placeholder="Another Night"
+                className="col-span-3"
+                aria-label={`track name ${index + 1}`}
+              />
+              <Input
+                id={`artist${index + 1}`}
+                type="text"
+                placeholder="Kosmical"
+                className="col-span-2"
+                aria-label={`artist ${index + 1}`}
+              />
+              <Input
+                id={`songKey${index + 1}`}
+                type="text"
+                placeholder="4A"
+                className="col-span-1"
+                aria-label={`song key ${index + 1}`}
+              />
+            </div>
+          ))}
+          <div className="flex">
+            <PlusCircledIcon
+              className="mr-2 h-4 w-4 cursor-pointer"
+              onClick={addTrack}
             />
-            <Input
-              id="artist1"
-              type="text"
-              placeholder="Kosmical"
-              className="col-span-2"
-              aria-label="artist 1"
+            <MinusCircledIcon
+              className="mr-2 h-4 w-4 cursor-pointer"
+              onClick={removeTrack}
             />
-            <Input
-              id="songKey1"
-              type="text"
-              placeholder="4A"
-              className="col-span-1"
-              aria-label="song key 1"
-            />
-          </div>
-          <div className="grid grid-cols-6 items-center gap-4">
-            <Input
-              id="trackName2"
-              type="text"
-              placeholder="Another Night"
-              className="col-span-3"
-              aria-label="track name 2"
-            />
-            <Input
-              id="artist2"
-              type="text"
-              placeholder="Kosmical"
-              className="col-span-2"
-              aria-label="artist 2"
-            />
-            <Input
-              id="songKey2"
-              type="text"
-              placeholder="4A"
-              className="col-span-1"
-              aria-label="song key 2"
-            />
-          </div>
-          <div className="grid grid-cols-1 items-center gap-4">
-            <PlusCircledIcon className="mr-2 h-4 w-4" />
           </div>
         </div>
 
         <DialogFooter>
-          <Button type="submit">Add tracks</Button>
+          <Button type="submit" onClick={resetTracks}>
+            Add tracks
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
