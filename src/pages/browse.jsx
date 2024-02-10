@@ -71,9 +71,19 @@ export default function Browse() {
                       </p>
                     </div>
                     <Separator className="my-4" />
-                    <div className="grid grid-cols-3 grid-flow-dense">
+                    <div
+                      style={{
+                        columnCount: "auto",
+                        columnWidth: "220px",
+                      }}
+                    >
                       {trackMatches.map((trackMatch, index) => (
-                        <TrackMatchList key={index} trackMatch={trackMatch} />
+                        <div
+                          style={{ breakInside: "avoid", marginBottom: "1rem" }}
+                          key={index}
+                        >
+                          <TrackMatchList key={index} trackMatch={trackMatch} />
+                        </div>
                       ))}
                     </div>
                   </TabsContent>
