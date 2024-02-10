@@ -22,7 +22,7 @@ import {
 
 import { playlists } from "../data/playlists";
 
-export function TrackMatch({ trackMatch, className, ...props }) {
+export function TrackMatchList({ trackMatch, className, ...props }) {
   const tracks = [];
   for (let i = 1; i <= Object.keys(trackMatch).length / 3; i++) {
     tracks.push({
@@ -36,25 +36,23 @@ export function TrackMatch({ trackMatch, className, ...props }) {
     <div className={cn("", className)} {...props}>
       <ContextMenu>
         <ContextMenuTrigger>
-          <Card className="inline-flex justify-center">
-            {tracks.map((album, index) => (
-              <CardContent key={index} className="space-y-3">
-                <div className="overflow-hidden rounded-md w-[100px]">
-                  <img
-                    src={album.cover}
-                    alt={album.name}
-                    className={cn("hover:scale-105", "aspect-square")}
-                  />
-                </div>
-                <div className="space-y-1 text-sm w-[100px]">
+          <Card className="flex flex-col w-64 pr-2">
+            {tracks.map((track, index) => (
+              <div key={index} className="flex items-center space-x-3">
+                <img
+                  src={track.cover}
+                  alt={track.name}
+                  className="w-16 h-16 flex-shrink-0"
+                />
+                <div className="overflow-hidden">
                   <h3 className="font-medium leading-none overflow-hidden text-ellipsis text-nowrap">
-                    {album.name}
+                    {track.name}
                   </h3>
                   <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
-                    {album.artist}
+                    {track.artist}
                   </p>
                 </div>
-              </CardContent>
+              </div>
             ))}
           </Card>
         </ContextMenuTrigger>

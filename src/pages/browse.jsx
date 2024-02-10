@@ -1,9 +1,9 @@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { TrackMatch } from "../components/track-match";
+import { TrackMatchCard } from "../components/track-match-card";
+import { TrackMatchList } from "../components/track-match-list";
 import { Menu } from "../components/menu";
-import { PodcastEmptyPlaceholder } from "../components/podcast-empty-placeholder";
 import { Sidebar } from "../components/sidebar";
 import { trackMatches } from "../data/albums";
 import { playlists } from "../data/playlists";
@@ -24,13 +24,13 @@ export default function Browse() {
             <Sidebar playlists={playlists} className="hidden lg:block" />
             <div className="col-span-3 lg:col-span-4 lg:border-l">
               <div className="h-full px-4 py-6 lg:px-8">
-                <Tabs defaultValue="music" className="h-full space-y-6">
+                <Tabs defaultValue="cards" className="h-full space-y-6">
                   <div className="space-between flex items-center">
                     <TabsList>
-                      <TabsTrigger value="music" className="relative">
-                        Music
+                      <TabsTrigger value="cards" className="relative">
+                        Cards
                       </TabsTrigger>
-                      <TabsTrigger value="podcasts">Podcasts</TabsTrigger>
+                      <TabsTrigger value="list">List</TabsTrigger>
                       <TabsTrigger value="live" disabled>
                         Live
                       </TabsTrigger>
@@ -40,8 +40,8 @@ export default function Browse() {
                     </div>
                   </div>
                   <TabsContent
-                    value="music"
-                    className="border-none p-0 outline-none "
+                    value="cards"
+                    className="border-none p-0 outline-none"
                   >
                     <div className="mt-6 space-y-1">
                       <h2 className="text-2xl font-semibold tracking-tight">
@@ -54,26 +54,28 @@ export default function Browse() {
                     <Separator className="my-4" />
                     <div className="flex flex-wrap justify-start gap-4">
                       {trackMatches.map((trackMatch, index) => (
-                        <TrackMatch key={index} trackMatch={trackMatch} />
+                        <TrackMatchCard key={index} trackMatch={trackMatch} />
                       ))}
                     </div>
                   </TabsContent>
                   <TabsContent
-                    value="podcasts"
-                    className="h-full flex-col border-none p-0 data-[state=active]:flex"
+                    value="list"
+                    className="border-none p-0 outline-none"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <h2 className="text-2xl font-semibold tracking-tight">
-                          New Episodes
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                          Your favorite podcasts. Updated daily.
-                        </p>
-                      </div>
+                    <div className="mt-6 space-y-1">
+                      <h2 className="text-2xl font-semibold tracking-tight">
+                        Browse the Collection
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        Everything in one place
+                      </p>
                     </div>
                     <Separator className="my-4" />
-                    <PodcastEmptyPlaceholder />
+                    <div className="grid grid-cols-3 grid-flow-dense">
+                      {trackMatches.map((trackMatch, index) => (
+                        <TrackMatchList key={index} trackMatch={trackMatch} />
+                      ))}
+                    </div>
                   </TabsContent>
                 </Tabs>
               </div>
