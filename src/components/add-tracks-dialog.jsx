@@ -15,31 +15,109 @@ import { Input } from "@/components/ui/input";
 import { PlusCircledIcon, MinusCircledIcon } from "@radix-ui/react-icons";
 
 export function AddTracks() {
-  const [tracks, setTracks] = useState([{}, {}]);
+  const [isOpen, setIsOpen] = useState(false);
+  const openDialog = () => setIsOpen(true);
+  const closeDialog = () => setIsOpen(false);
+
+  const [tracks, setTracks] = useState([
+    {
+      name: "",
+      artist: "",
+      key: "",
+      cover:
+        "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    },
+    {
+      name: "",
+      artist: "",
+      key: "",
+      cover:
+        "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    },
+  ]);
+
+  const handleInputChange = (index, field, value) => {
+    const newTracks = [...tracks];
+    newTracks[index][field] = value;
+    setTracks(newTracks);
+  };
 
   const addTrack = () => {
-    setTracks([...tracks, {}]);
+    setTracks([
+      ...tracks,
+      {
+        name: "",
+        artist: "",
+        key: "",
+        cover:
+          "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+      },
+    ]);
   };
 
   const resetTracks = () => {
-    setTracks([{}, {}]); // Reset to two tracks
+    setTracks([
+      {
+        name: "",
+        artist: "",
+        key: "",
+        cover:
+          "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+      },
+      {
+        name: "",
+        artist: "",
+        key: "",
+        cover:
+          "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+      },
+    ]); // Reset to two tracks
   };
 
   const removeTrack = () => {
-    if (tracks.length > 2) {
+    if (tracks.length > 1) {
       setTracks(tracks.slice(0, -1)); // Remove the last track
     }
   };
 
+  const createTrackMatch = async (tracks) => {
+    for (let track of tracks) {
+      if (!track.name || !track.artist || !track.key || !track.cover) {
+        alert("Please fill in all fields.");
+        return;
+      }
+    }
+    try {
+      const response = await fetch(
+        "http://localhost:3001/tracks/trackmatches",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tracks }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data);
+      closeDialog();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button onClick={openDialog}>
           <PlusCircledIcon className="mr-2 h-4 w-4" />
           Add Tracks
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent resetTracks={resetTracks}>
         <DialogHeader>
           <DialogTitle>Add new tracks</DialogTitle>
           <DialogDescription>
@@ -58,6 +136,9 @@ export function AddTracks() {
                 placeholder="Another Night"
                 className="col-span-3"
                 aria-label={`track name ${index + 1}`}
+                onChange={(e) =>
+                  handleInputChange(index, "name", e.target.value)
+                }
               />
               <Input
                 id={`artist${index + 1}`}
@@ -65,6 +146,9 @@ export function AddTracks() {
                 placeholder="Kosmical"
                 className="col-span-2"
                 aria-label={`artist ${index + 1}`}
+                onChange={(e) =>
+                  handleInputChange(index, "artist", e.target.value)
+                }
               />
               <Input
                 id={`songKey${index + 1}`}
@@ -72,6 +156,9 @@ export function AddTracks() {
                 placeholder="4A"
                 className="col-span-1"
                 aria-label={`song key ${index + 1}`}
+                onChange={(e) =>
+                  handleInputChange(index, "key", e.target.value)
+                }
               />
             </div>
           ))}
@@ -88,7 +175,7 @@ export function AddTracks() {
         </div>
 
         <DialogFooter>
-          <Button type="submit" onClick={resetTracks}>
+          <Button type="submit" onClick={() => createTrackMatch(tracks)}>
             Add tracks
           </Button>
         </DialogFooter>
