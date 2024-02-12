@@ -9,34 +9,7 @@ import { trackMatches } from "../data/albums";
 import { playlistsPlaceholder } from "../data/playlists";
 import { AddTracks } from "../components/add-tracks-dialog";
 
-import { useEffect, useState } from "react";
-
-export const metadata = {
-  title: "Music App",
-  description: "Example music app using the components.",
-};
-
-export default function Browse() {
-  const [allTrackMatches, setAllTrackMatches] = useState([]);
-
-  useEffect(() => {
-    const trackMatches = getAllTrackMatches();
-    setAllTrackMatches(trackMatches);
-  }, []);
-
-  const getAllTrackMatches = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/tracks/trackmatches");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const trackMatches = await response.json();
-      return trackMatches;
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
+export default function Songs() {
   return (
     <>
       <Menu />
@@ -70,7 +43,7 @@ export default function Browse() {
                   >
                     <div className="mt-6 space-y-1">
                       <h2 className="text-2xl font-semibold tracking-tight">
-                        Browse the Collection
+                        Songs Page
                       </h2>
                       <p className="text-sm text-muted-foreground">
                         Everything in one place
@@ -93,7 +66,7 @@ export default function Browse() {
                   >
                     <div className="mt-6 space-y-1">
                       <h2 className="text-2xl font-semibold tracking-tight">
-                        Browse the Collection
+                        Songs Page
                       </h2>
                       <p className="text-sm text-muted-foreground">
                         Everything in one place

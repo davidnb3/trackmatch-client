@@ -104,6 +104,7 @@ export function AddTracks() {
       const data = await response.json();
       console.log(data);
       closeDialog();
+      resetTracks();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -117,13 +118,12 @@ export function AddTracks() {
           Add Tracks
         </Button>
       </DialogTrigger>
-      <DialogContent resetTracks={resetTracks}>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add new tracks</DialogTitle>
+          <DialogTitle className="mb-1">Add new tracks</DialogTitle>
           <DialogDescription>
-            Add two new tracks from Spotify that sound good when mixing
-            together. You can then add them to your TrackMate or Spotify
-            playlists.
+            Add two or more tracks into a TrackMatch which you can drag and drop
+            into as many playlists as you like.
           </DialogDescription>
         </DialogHeader>
 
@@ -175,6 +175,9 @@ export function AddTracks() {
         </div>
 
         <DialogFooter>
+          <Button onClick={closeDialog} variant="outline">
+            Cancel
+          </Button>
           <Button type="submit" onClick={() => createTrackMatch(tracks)}>
             Add tracks
           </Button>

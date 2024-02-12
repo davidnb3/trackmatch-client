@@ -31,6 +31,7 @@ export const madeForYouAlbums = [
     artist: "Lena Logic",
     cover:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    keyr: "A4",
   },
   {
     name: "Functional Fury",
@@ -70,227 +71,274 @@ export const trackMatches = [
     artist1: "Lorem Ipsum Inshallah uhdsiufhaskdfighdsajgahjhsdlkfjgbndlkgjn",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
     trackName3: "Lorem Ipsum",
     artist3: "Lorem Ipsum Inshallah",
     cover3:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key3: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Weib",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Weib",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
     trackName3: "Lorem Ipsum Shall Weib",
     artist3: "Lorem Ipsum Inshallah",
     cover3:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key3: "A4",
     trackName4: "Lorem Ipsum Shall Weib",
     artist4: "Lorem Ipsum Inshallah",
     cover4:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key4: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Leid",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Leid",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall HAHA",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall HAHA",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Night",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Night",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Weib",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Weib",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
     trackName3: "Lorem Ipsum Shall Weib",
     artist3: "Lorem Ipsum Inshallah",
     cover3:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key3: "A4",
     trackName4: "Lorem Ipsum Shall Weib",
     artist4: "Lorem Ipsum Inshallah",
     cover4:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key4: "A4",
     trackName5: "Lorem Ipsum Shall Weib",
     artist5: "Lorem Ipsum Inshallah",
     cover5:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key5: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Leid",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Leid",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall HAHA",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall HAHA",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Weib",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Weib",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Leid",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Leid",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall HAHA",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall HAHA",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Weib",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Weib",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Leid",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Leid",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall HAHA",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall HAHA",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
     trackName3: "Lorem Ipsum Shall HAHA",
     artist3: "Lorem Ipsum Inshallah",
     cover3:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key3: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Weib",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Weib",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Leid",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Leid",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall HAHA",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall HAHA",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Weib",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Weib",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall Leid",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall Leid",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
   {
     trackName1: "Lorem Ipsum Shall HAHA",
     artist1: "Lorem Ipsum Inshallah",
     cover1:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key1: "A4",
     trackName2: "Lorem Ipsum Shall HAHA",
     artist2: "Lorem Ipsum Inshallah",
     cover2:
       "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+    key2: "A4",
   },
 ];

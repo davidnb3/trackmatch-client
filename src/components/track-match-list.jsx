@@ -13,15 +13,16 @@ import {
 } from "@/components/ui/context-menu";
 
 import { useDraggable } from "@dnd-kit/core";
-import { playlists } from "../data/playlists";
+import { playlistsPlaceholder } from "../data/playlists";
 
 export function TrackMatchList({ trackMatch, id }) {
   const tracks = [];
-  for (let i = 1; i <= Object.keys(trackMatch).length / 3; i++) {
+  for (let i = 1; i <= Object.keys(trackMatch).length / 4; i++) {
     tracks.push({
       name: trackMatch[`trackName${i}`],
       artist: trackMatch[`artist${i}`],
       cover: trackMatch[`cover${i}`],
+      key: trackMatch[`key${i}`],
     });
   }
 
@@ -54,6 +55,9 @@ export function TrackMatchList({ trackMatch, id }) {
                   <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
                     {track.artist}
                   </p>
+                  <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
+                    {track.key}
+                  </p>
                 </div>
               </div>
             ))}
@@ -69,7 +73,7 @@ export function TrackMatchList({ trackMatch, id }) {
                 New Playlist
               </ContextMenuItem>
               <ContextMenuSeparator />
-              {playlists.map((playlist) => (
+              {playlistsPlaceholder.map((playlist) => (
                 <ContextMenuItem key={playlist}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -12,7 +12,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 
-import { playlists } from "../data/playlists";
+import { playlistsPlaceholder } from "../data/playlists";
 
 export function AlbumArtwork({
   album,
@@ -49,7 +49,7 @@ export function AlbumArtwork({
                 New Playlist
               </ContextMenuItem>
               <ContextMenuSeparator />
-              {playlists.map((playlist) => (
+              {playlistsPlaceholder.map((playlist) => (
                 <ContextMenuItem key={playlist}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

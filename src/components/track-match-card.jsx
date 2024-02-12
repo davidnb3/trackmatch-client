@@ -1,6 +1,5 @@
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Card, CardContent } from "@/components/ui/card";
-import React from "react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -15,15 +14,16 @@ import {
 } from "@/components/ui/context-menu";
 
 import { useDraggable } from "@dnd-kit/core";
-import { playlists } from "../data/playlists";
+import { playlistsPlaceholder } from "../data/playlists";
 
 export function TrackMatchCard({ trackMatch, id }) {
   const tracks = [];
-  for (let i = 1; i <= Object.keys(trackMatch).length / 3; i++) {
+  for (let i = 1; i <= Object.keys(trackMatch).length / 4; i++) {
     tracks.push({
       name: trackMatch[`trackName${i}`],
       artist: trackMatch[`artist${i}`],
       cover: trackMatch[`cover${i}`],
+      key: trackMatch[`key${i}`],
     });
   }
 
@@ -42,21 +42,24 @@ export function TrackMatchCard({ trackMatch, id }) {
       <ContextMenu>
         <ContextMenuTrigger>
           <Card className="inline-flex justify-center shadow-md">
-            {tracks.map((album, index) => (
+            {tracks.map((track, index) => (
               <CardContent key={index} className="space-y-3">
                 <div className="overflow-hidden rounded-md w-[100px]">
                   <img
-                    src={album.cover}
-                    alt={album.name}
+                    src={track.cover}
+                    alt={track.name}
                     className={cn("hover:scale-105", "aspect-square")}
                   />
                 </div>
                 <div className="space-y-1 text-sm w-[100px]">
                   <h3 className="font-medium leading-none overflow-hidden text-ellipsis text-nowrap">
-                    {album.name}
+                    {track.name}
                   </h3>
                   <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
-                    {album.artist}
+                    {track.artist}
+                  </p>
+                  <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
+                    {track.key}
                   </p>
                 </div>
               </CardContent>
@@ -73,7 +76,7 @@ export function TrackMatchCard({ trackMatch, id }) {
                 New Playlist
               </ContextMenuItem>
               <ContextMenuSeparator />
-              {playlists.map((playlist) => (
+              {playlistsPlaceholder.map((playlist) => (
                 <ContextMenuItem key={playlist}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

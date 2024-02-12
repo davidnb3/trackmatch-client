@@ -1,41 +1,42 @@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import { TrackMatchCard } from "../components/track-match-card";
 import { TrackMatchList } from "../components/track-match-list";
 import { Menu } from "../components/menu";
 import { Sidebar } from "../components/sidebar";
-import { trackMatches } from "../data/albums";
 import { playlistsPlaceholder } from "../data/playlists";
 import { AddTracks } from "../components/add-tracks-dialog";
 
-import { useEffect, useState } from "react";
-
-export const metadata = {
-  title: "Music App",
-  description: "Example music app using the components.",
-};
-
-export default function Browse() {
-  const [allTrackMatches, setAllTrackMatches] = useState([]);
+export default function Playlist() {
+  const { playlistId } = useParams();
+  const [playlist, setPlaylist] = useState(null);
+  const [trackMatches, setTrackMatches] = useState([]);
 
   useEffect(() => {
-    const trackMatches = getAllTrackMatches();
-    setAllTrackMatches(trackMatches);
-  }, []);
+    fetch(`http://localhost:3001/playlists/${playlistId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setPlaylist(data);
+      })
+      .catch((error) => {
+        console.error(
+          "There has been a problem with your fetch operation:",
+          error
+        );
+      });
+  }, [playlistId]);
 
-  const getAllTrackMatches = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/tracks/trackmatches");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const trackMatches = await response.json();
-      return trackMatches;
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  if (!playlist) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <>
@@ -70,10 +71,10 @@ export default function Browse() {
                   >
                     <div className="mt-6 space-y-1">
                       <h2 className="text-2xl font-semibold tracking-tight">
-                        Browse the Collection
+                        {playlist.name}
                       </h2>
                       <p className="text-sm text-muted-foreground">
-                        Everything in one place
+                        {playlist.description}
                       </p>
                     </div>
                     <Separator className="my-4" />

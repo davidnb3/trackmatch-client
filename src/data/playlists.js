@@ -1,4 +1,4 @@
-export const playlists = [
+export const playlistsPlaceholder = [
   "Recently Added",
   "Recently Played",
   "Top Songs",
