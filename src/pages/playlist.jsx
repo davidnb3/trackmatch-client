@@ -2,6 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { TrackMatchCard } from "../components/track-match-card";
 import { TrackMatchList } from "../components/track-match-list";
@@ -14,6 +15,7 @@ export default function Playlist() {
   const { playlistId } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const [trackMatches, setTrackMatches] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch(`http://localhost:3001/playlists/${playlistId}`)
@@ -25,6 +27,8 @@ export default function Playlist() {
       })
       .then((data) => {
         setPlaylist(data);
+        setTrackMatches(data.trackMatches);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error(
@@ -33,10 +37,6 @@ export default function Playlist() {
         );
       });
   }, [playlistId]);
-
-  if (!playlist) {
-    return null; // Or a loading spinner
-  }
 
   return (
     <>
@@ -70,15 +70,31 @@ export default function Playlist() {
                     className="border-none p-0 outline-none"
                   >
                     <div className="mt-6 space-y-1">
-                      <h2 className="text-2xl font-semibold tracking-tight">
-                        {playlist.name}
-                      </h2>
-                      <p className="text-sm text-muted-foreground">
-                        {playlist.description}
-                      </p>
+                      {isLoading ? (
+                        <Skeleton className="h-6 w-[200px]" />
+                      ) : (
+                        <>
+                          <h2 className="text-2xl font-semibold tracking-tight">
+                            {playlist.name}
+                          </h2>
+                          <p className="text-sm text-muted-foreground">
+                            {playlist.description}
+                          </p>
+                        </>
+                      )}
                     </div>
                     <Separator className="my-4" />
                     <div className="flex flex-wrap justify-start gap-4">
+                      {isLoading ? (
+                        <>
+                          <Skeleton className="h-[200px] w-[266px]" />
+                          <Skeleton className="h-[200px] w-[398px]" />
+                          <Skeleton className="h-[200px] w-[530px]" />
+                          <Skeleton className="h-[200px] w-[266px]" />
+                        </>
+                      ) : (
+                        ""
+                      )}
                       {trackMatches.map((trackMatch, index) => (
                         <TrackMatchCard
                           key={index}

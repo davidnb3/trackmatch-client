@@ -1,27 +1,24 @@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { TrackMatchCard } from "../components/track-match-card";
 import { TrackMatchList } from "../components/track-match-list";
 import { Menu } from "../components/menu";
 import { Sidebar } from "../components/sidebar";
-import { trackMatches } from "../data/albums";
 import { playlistsPlaceholder } from "../data/playlists";
 import { AddTracks } from "../components/add-tracks-dialog";
 
 import { useEffect, useState } from "react";
 
-export const metadata = {
-  title: "Music App",
-  description: "Example music app using the components.",
-};
-
 export default function Browse() {
   const [allTrackMatches, setAllTrackMatches] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const trackMatches = getAllTrackMatches();
-    setAllTrackMatches(trackMatches);
+    getAllTrackMatches().then((trackMatches) =>
+      setAllTrackMatches(trackMatches)
+    );
   }, []);
 
   const getAllTrackMatches = async () => {
@@ -31,9 +28,11 @@ export default function Browse() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const trackMatches = await response.json();
-      return trackMatches;
+      setIsLoading(false);
+      return Array.isArray(trackMatches) ? trackMatches : [];
     } catch (error) {
       console.error("Error:", error);
+      return [];
     }
   };
 
@@ -78,7 +77,17 @@ export default function Browse() {
                     </div>
                     <Separator className="my-4" />
                     <div className="flex flex-wrap justify-start gap-4">
-                      {trackMatches.map((trackMatch, index) => (
+                      {isLoading ? (
+                        <>
+                          <Skeleton className="h-[200px] w-[266px]" />
+                          <Skeleton className="h-[200px] w-[398px]" />
+                          <Skeleton className="h-[200px] w-[530px]" />
+                          <Skeleton className="h-[200px] w-[266px]" />
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {allTrackMatches.map((trackMatch, index) => (
                         <TrackMatchCard
                           key={index}
                           trackMatch={trackMatch}
@@ -106,7 +115,7 @@ export default function Browse() {
                         columnWidth: "220px",
                       }}
                     >
-                      {trackMatches.map((trackMatch, index) => (
+                      {allTrackMatches.map((trackMatch, index) => (
                         <div
                           style={{ breakInside: "avoid", marginBottom: "1rem" }}
                           key={index}

@@ -17,18 +17,11 @@ import { useDraggable } from "@dnd-kit/core";
 import { playlistsPlaceholder } from "../data/playlists";
 
 export function TrackMatchCard({ trackMatch, id }) {
-  const tracks = [];
-  for (let i = 1; i <= Object.keys(trackMatch).length / 4; i++) {
-    tracks.push({
-      name: trackMatch[`trackName${i}`],
-      artist: trackMatch[`artist${i}`],
-      cover: trackMatch[`cover${i}`],
-      key: trackMatch[`key${i}`],
-    });
-  }
-
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `trackMatchCard-${id}`,
+    data: {
+      trackMatchId: trackMatch._id,
+    },
   });
 
   const style = transform
@@ -42,7 +35,7 @@ export function TrackMatchCard({ trackMatch, id }) {
       <ContextMenu>
         <ContextMenuTrigger>
           <Card className="inline-flex justify-center shadow-md">
-            {tracks.map((track, index) => (
+            {trackMatch?.tracks?.map((track, index) => (
               <CardContent key={index} className="space-y-3">
                 <div className="overflow-hidden rounded-md w-[100px]">
                   <img
@@ -67,7 +60,6 @@ export function TrackMatchCard({ trackMatch, id }) {
           </Card>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-40">
-          <ContextMenuItem>Add to Library</ContextMenuItem>
           <ContextMenuSub>
             <ContextMenuSubTrigger>Add to Playlist</ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-48">

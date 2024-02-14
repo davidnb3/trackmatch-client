@@ -1,22 +1,16 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Pencil1Icon, TrashIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
-import { DeletePlaylistDialog } from "./deletePlaylistDialog";
-import { EditPlaylistDialog } from "./editPlaylistDialog";
+import { PlaylistButton } from "./playlistButton";
 import { Link } from "react-router-dom";
-import { playlistsPlaceholder } from "@/data/playlists";
-import { useDroppable } from "@dnd-kit/core";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function Sidebar({ className }) {
   const pathname = window.location.pathname;
   const [playlists, setPlaylists] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { setNodeRef, ...props } = useDroppable({
-    id: "unique-id",
-  });
-
-  console.log(props);
   const getAllPlaylists = async () => {
     try {
       const response = await fetch("http://localhost:3001/playlists");
@@ -25,6 +19,7 @@ export function Sidebar({ className }) {
       }
       const playlists = await response.json();
       setPlaylists(playlists);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -57,7 +52,7 @@ export function Sidebar({ className }) {
 
   useEffect(() => {
     getAllPlaylists();
-  }, [playlists]);
+  }, []);
 
   return (
     <div className={cn("pb-12", className)}>
@@ -238,54 +233,24 @@ export function Sidebar({ className }) {
               onClick={createNewPlaylist}
             />
           </h2>
-
-          <div className="px-3 py-2">
-            {playlistsPlaceholder
-              ?.slice()
-              .reverse()
-              .map((playlist, i) => (
-                <Button
-                  key={i}
-                  ref={setNodeRef}
-                  variant="ghost"
-                  className="w-full justify-between items-center flex group"
-                >
-                  <div className="flex items-center min-w-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="mr-2 h-4 w-4 flex-shrink-0"
-                    >
-                      <path d="M21 15V6" />
-                      <path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
-                      <path d="M12 12H3" />
-                      <path d="M16 6H3" />
-                      <path d="M12 18H3" />
-                    </svg>
-                    <span className="overflow-hidden text-ellipsis text-nowrap">
-                      {playlist}
-                    </span>
-                  </div>
-                  <div className="flex opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <div className="rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-1">
-                      <EditPlaylistDialog playlist={playlist}>
-                        <Pencil1Icon className="h-4 w-4 cursor-pointer" />
-                      </EditPlaylistDialog>
-                    </div>
-                    <div className="rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-1">
-                      <DeletePlaylistDialog playlist={playlist}>
-                        <TrashIcon className="h-4 w-4 cursor-pointer" />
-                      </DeletePlaylistDialog>
-                    </div>
-                  </div>
-                </Button>
-              ))}
-          </div>
+          {isLoading ? (
+            <div className="px-7 py-4">
+              {Array(5)
+                .fill()
+                .map((_, index) => (
+                  <Skeleton key={index} className="h-6  mb-2" />
+                ))}
+            </div>
+          ) : (
+            <div className="px-3 py-2">
+              {playlists
+                ?.slice()
+                .reverse()
+                .map((playlist) => (
+                  <PlaylistButton playlist={playlist} key={playlist._id} />
+                ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

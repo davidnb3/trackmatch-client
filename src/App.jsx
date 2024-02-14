@@ -8,14 +8,26 @@ import Artists from "./pages/artists.jsx";
 import { DndContext } from "@dnd-kit/core";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-export const metadata = {
-  title: "Music App",
-  description: "Example music app using the components.",
-};
-
 export default function App() {
+  const handleDragEnd = (event) => {
+    const { over } = event;
+
+    if (over) {
+      const playlistId = over.id;
+      const trackMatchId = event.active.data.current.trackMatchId;
+
+      fetch(`http://localhost:3001/playlists/${playlistId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ trackMatchId }),
+      });
+    }
+  };
+
   return (
-    <DndContext>
+    <DndContext onDragEnd={handleDragEnd}>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />

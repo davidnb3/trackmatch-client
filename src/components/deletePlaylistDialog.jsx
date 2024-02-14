@@ -13,7 +13,12 @@ import { Button } from "@/components/ui/button";
 
 export function DeletePlaylistDialog({ playlist, children }) {
   const [isOpen, setIsOpen] = useState(false);
-  const openDialog = () => setIsOpen(true);
+
+  const openDialog = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsOpen(true);
+  };
   const closeDialog = () => setIsOpen(false);
 
   const deletePlaylist = () => {
@@ -30,9 +35,9 @@ export function DeletePlaylistDialog({ playlist, children }) {
         <DialogHeader>
           <DialogTitle className="mb-1">Delete Playlist?</DialogTitle>
           <DialogDescription>
-            This will delete <span className="font-bold">{playlist}</span> from
-            your library and <span className="font-bold">cannot be undone</span>
-            .
+            This will delete <span className="font-bold">{playlist.name}</span>{" "}
+            from your library and{" "}
+            <span className="font-bold">cannot be undone</span>.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

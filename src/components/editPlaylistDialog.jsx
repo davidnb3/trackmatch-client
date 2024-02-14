@@ -17,7 +17,11 @@ export function EditPlaylistDialog({ playlist, children }) {
   const [name, setName] = useState(playlist.name);
   const [description, setDescription] = useState(playlist.description || "");
 
-  const openDialog = () => setIsOpen(true);
+  const openDialog = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsOpen(true);
+  };
   const closeDialog = () => setIsOpen(false);
 
   const updatePlaylist = () => {

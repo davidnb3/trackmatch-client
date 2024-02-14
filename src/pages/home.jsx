@@ -10,8 +10,6 @@ import { listenNowAlbums, madeForYouAlbums } from "../data/albums";
 import { playlistsPlaceholder } from "../data/playlists";
 import { AddTracks } from "../components/add-tracks-dialog";
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-
 export const metadata = {
   title: "Music App",
   description: "Example music app using the components.",
