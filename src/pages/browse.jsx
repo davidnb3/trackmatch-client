@@ -1,12 +1,12 @@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
 
-import { TrackMatchCard } from "../components/track-match-card";
-import { TrackMatchList } from "../components/track-match-list";
+import { TrackMatch } from "../components/track-match";
 import { Menu } from "../components/menu";
 import { Sidebar } from "../components/sidebar";
-import { playlistsPlaceholder } from "../data/playlists";
 import { AddTracks } from "../components/add-tracks-dialog";
 
 import { useEffect, useState } from "react";
@@ -42,10 +42,7 @@ export default function Browse() {
       <div className="border-t">
         <div className="bg-background">
           <div className="grid lg:grid-cols-5">
-            <Sidebar
-              playlists={playlistsPlaceholder}
-              className="hidden lg:block"
-            />
+            <Sidebar className="hidden lg:block" />
             <div className="col-span-3 lg:col-span-4 lg:border-l">
               <div className="h-full px-4 py-6 lg:px-8">
                 <Tabs defaultValue="cards" className="h-full space-y-6">
@@ -60,7 +57,12 @@ export default function Browse() {
                       </TabsTrigger>
                     </TabsList>
                     <div className="ml-auto mr-4">
-                      <AddTracks />
+                      <AddTracks>
+                        <Button>
+                          <PlusCircledIcon className="mr-2 h-4 w-4" />
+                          Add Tracks
+                        </Button>
+                      </AddTracks>
                     </div>
                   </div>
                   <TabsContent
@@ -88,10 +90,11 @@ export default function Browse() {
                         ""
                       )}
                       {allTrackMatches.map((trackMatch, index) => (
-                        <TrackMatchCard
+                        <TrackMatch
                           key={index}
                           trackMatch={trackMatch}
                           id={index}
+                          view={"card"}
                         />
                       ))}
                     </div>
@@ -116,16 +119,12 @@ export default function Browse() {
                       }}
                     >
                       {allTrackMatches.map((trackMatch, index) => (
-                        <div
-                          style={{ breakInside: "avoid", marginBottom: "1rem" }}
+                        <TrackMatch
                           key={index}
-                        >
-                          <TrackMatchList
-                            key={index}
-                            trackMatch={trackMatch}
-                            id={index}
-                          />
-                        </div>
+                          trackMatch={trackMatch}
+                          id={index}
+                          view={"list"}
+                        />
                       ))}
                     </div>
                   </TabsContent>

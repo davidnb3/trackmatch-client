@@ -1,15 +1,16 @@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
 
-import { TrackMatchCard } from "../components/track-match-card";
-import { TrackMatchList } from "../components/track-match-list";
+import { TrackMatch } from "../components/track-match";
 import { Menu } from "../components/menu";
 import { Sidebar } from "../components/sidebar";
 import { trackMatches } from "../data/albums";
 import { playlistsPlaceholder } from "../data/playlists";
 import { AddTracks } from "../components/add-tracks-dialog";
 
-export default function Artists() {
+export default function Songs() {
   return (
     <>
       <Menu />
@@ -34,7 +35,12 @@ export default function Artists() {
                       </TabsTrigger>
                     </TabsList>
                     <div className="ml-auto mr-4">
-                      <AddTracks />
+                      <AddTracks>
+                        <Button>
+                          <PlusCircledIcon className="mr-2 h-4 w-4" />
+                          Add Tracks
+                        </Button>
+                      </AddTracks>
                     </div>
                   </div>
                   <TabsContent
@@ -43,7 +49,7 @@ export default function Artists() {
                   >
                     <div className="mt-6 space-y-1">
                       <h2 className="text-2xl font-semibold tracking-tight">
-                        Artists Page
+                        Library
                       </h2>
                       <p className="text-sm text-muted-foreground">
                         Everything in one place
@@ -52,7 +58,7 @@ export default function Artists() {
                     <Separator className="my-4" />
                     <div className="flex flex-wrap justify-start gap-4">
                       {trackMatches.map((trackMatch, index) => (
-                        <TrackMatchCard
+                        <TrackMatch
                           key={index}
                           trackMatch={trackMatch}
                           id={index}
@@ -66,7 +72,7 @@ export default function Artists() {
                   >
                     <div className="mt-6 space-y-1">
                       <h2 className="text-2xl font-semibold tracking-tight">
-                        Artists Page
+                        Library Page
                       </h2>
                       <p className="text-sm text-muted-foreground">
                         Everything in one place
@@ -84,7 +90,7 @@ export default function Artists() {
                           style={{ breakInside: "avoid", marginBottom: "1rem" }}
                           key={index}
                         >
-                          <TrackMatchList
+                          <TrackMatch
                             key={index}
                             trackMatch={trackMatch}
                             id={index}

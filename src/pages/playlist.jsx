@@ -3,9 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
 
-import { TrackMatchCard } from "../components/track-match-card";
-import { TrackMatchList } from "../components/track-match-list";
+import { TrackMatch } from "../components/track-match";
 import { Menu } from "../components/menu";
 import { Sidebar } from "../components/sidebar";
 import { playlistsPlaceholder } from "../data/playlists";
@@ -57,12 +58,14 @@ export default function Playlist() {
                         Cards
                       </TabsTrigger>
                       <TabsTrigger value="list">List</TabsTrigger>
-                      <TabsTrigger value="live" disabled>
-                        Live
-                      </TabsTrigger>
                     </TabsList>
                     <div className="ml-auto mr-4">
-                      <AddTracks />
+                      <AddTracks>
+                        <Button>
+                          <PlusCircledIcon className="mr-2 h-4 w-4" />
+                          Add Tracks
+                        </Button>
+                      </AddTracks>
                     </div>
                   </div>
                   <TabsContent
@@ -75,10 +78,10 @@ export default function Playlist() {
                       ) : (
                         <>
                           <h2 className="text-2xl font-semibold tracking-tight">
-                            {playlist.name}
+                            {playlist?.name}
                           </h2>
                           <p className="text-sm text-muted-foreground">
-                            {playlist.description}
+                            {playlist?.description}
                           </p>
                         </>
                       )}
@@ -96,10 +99,11 @@ export default function Playlist() {
                         ""
                       )}
                       {trackMatches.map((trackMatch, index) => (
-                        <TrackMatchCard
+                        <TrackMatch
                           key={index}
                           trackMatch={trackMatch}
                           id={index}
+                          view={"card"}
                         />
                       ))}
                     </div>
@@ -110,10 +114,10 @@ export default function Playlist() {
                   >
                     <div className="mt-6 space-y-1">
                       <h2 className="text-2xl font-semibold tracking-tight">
-                        Browse the Collection
+                        {playlist?.name}
                       </h2>
                       <p className="text-sm text-muted-foreground">
-                        Everything in one place
+                        {playlist?.description}
                       </p>
                     </div>
                     <Separator className="my-4" />
@@ -128,10 +132,11 @@ export default function Playlist() {
                           style={{ breakInside: "avoid", marginBottom: "1rem" }}
                           key={index}
                         >
-                          <TrackMatchList
+                          <TrackMatch
                             key={index}
                             trackMatch={trackMatch}
                             id={index}
+                            view={"list"}
                           />
                         </div>
                       ))}

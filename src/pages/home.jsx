@@ -1,6 +1,8 @@
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
 
 import { AlbumArtwork } from "../components/album-artwork";
 import { Menu } from "../components/menu";
@@ -9,11 +11,6 @@ import { Sidebar } from "../components/sidebar";
 import { listenNowAlbums, madeForYouAlbums } from "../data/albums";
 import { playlistsPlaceholder } from "../data/playlists";
 import { AddTracks } from "../components/add-tracks-dialog";
-
-export const metadata = {
-  title: "Music App",
-  description: "Example music app using the components.",
-};
 
 export default function Home() {
   return (
@@ -40,7 +37,12 @@ export default function Home() {
                       </TabsTrigger>
                     </TabsList>
                     <div className="ml-auto mr-4">
-                      <AddTracks />
+                      <AddTracks>
+                        <Button>
+                          <PlusCircledIcon className="mr-2 h-4 w-4" />
+                          Add Tracks
+                        </Button>
+                      </AddTracks>
                     </div>
                   </div>
                   <TabsContent

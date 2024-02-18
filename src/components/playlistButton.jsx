@@ -5,16 +5,20 @@ import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import PropTypes from "prop-types";
 
 import { DeletePlaylistDialog } from "./deletePlaylistDialog";
 import { EditPlaylistDialog } from "./editPlaylistDialog";
 import { useDroppable } from "@dnd-kit/core";
+
+PlaylistButton.propTypes = {
+  playlist: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+  }),
+};
 
 export function PlaylistButton({ playlist }) {
   const { setNodeRef, isOver } = useDroppable({
