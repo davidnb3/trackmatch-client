@@ -5,6 +5,11 @@ import { useEffect, useState } from "react";
 import { PlaylistButton } from "./playlistButton";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import PropTypes from "prop-types";
+
+Sidebar.propTypes = {
+  className: PropTypes.string,
+};
 
 export function Sidebar({ className }) {
   const pathname = window.location.pathname;
@@ -27,6 +32,11 @@ export function Sidebar({ className }) {
 
   const createNewPlaylist = async () => {
     try {
+      const date = new Date();
+      const formattedDate = `${date.getDate()}.${
+        date.getMonth() + 1
+      }.${date.getFullYear()}`;
+
       const response = await fetch("http://localhost:3001/playlists", {
         method: "POST",
         headers: {
@@ -35,7 +45,7 @@ export function Sidebar({ className }) {
         body: JSON.stringify({
           name: "New Playlist",
           trackMatches: [],
-          description: "My new Playlist",
+          description: `My new playlist created on ${formattedDate}`,
         }),
       });
 

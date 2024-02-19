@@ -8,9 +8,15 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+EditPlaylistDialog.propTypes = {
+  playlist: PropTypes.object.isRequired,
+  children: PropTypes.node.isRequired,
+};
 
 export function EditPlaylistDialog({ playlist, children }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,8 +30,25 @@ export function EditPlaylistDialog({ playlist, children }) {
   };
   const closeDialog = () => setIsOpen(false);
 
-  const updatePlaylist = () => {
-    // update the playlist
+  const updatePlaylist = async () => {
+    const response = await fetch(
+      `http://localhost:3001/playlists/${playlist._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          description,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     closeDialog();
   };
 

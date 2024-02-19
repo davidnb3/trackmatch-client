@@ -8,22 +8,36 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 
 export function DeletePlaylistDialog({ playlist, children }) {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const openDialog = (event) => {
     event.preventDefault();
     event.stopPropagation();
     setIsOpen(true);
   };
+
   const closeDialog = () => setIsOpen(false);
 
-  const deletePlaylist = () => {
-    // delete the playlist
+  const deletePlaylist = async () => {
+    const response = await fetch(
+      `http://localhost:3001/playlists/${playlist._id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     closeDialog();
+    navigate("/");
   };
 
   return (
