@@ -23,7 +23,7 @@ export default function Browse() {
 
   const getAllTrackMatches = async () => {
     try {
-      const response = await fetch("http://localhost:3001/tracks/trackmatches");
+      const response = await fetch("http://localhost:3001/trackmatches");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -56,7 +56,7 @@ export default function Browse() {
                         Live
                       </TabsTrigger>
                     </TabsList>
-                    <div className="ml-auto mr-4">
+                    <div className="ml-auto">
                       <AddTracks>
                         <Button>
                           <PlusCircledIcon className="mr-2 h-4 w-4" />

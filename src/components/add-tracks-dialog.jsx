@@ -98,16 +98,13 @@ export function AddTracks({ children, trackMatch }) {
 
   const createNewTrackMatch = async (tracks) => {
     try {
-      const response = await fetch(
-        "http://localhost:3001/tracks/trackmatches",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ tracks }),
-        }
-      );
+      const response = await fetch("http://localhost:3001/trackmatches", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tracks }),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -125,7 +122,7 @@ export function AddTracks({ children, trackMatch }) {
   const updateExistingTrackMatch = async (tracks) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/tracks/trackmatches/${trackMatch._id}`,
+        `http://localhost:3001/trackmatches/${trackMatch._id}`,
         {
           method: "PUT",
           headers: {

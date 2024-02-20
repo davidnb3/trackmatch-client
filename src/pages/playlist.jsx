@@ -59,7 +59,7 @@ export default function Playlist() {
                       </TabsTrigger>
                       <TabsTrigger value="list">List</TabsTrigger>
                     </TabsList>
-                    <div className="ml-auto mr-4">
+                    <div className="ml-auto">
                       <AddTracks>
                         <Button>
                           <PlusCircledIcon className="mr-2 h-4 w-4" />

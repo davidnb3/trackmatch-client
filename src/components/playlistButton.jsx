@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/context-menu";
 import PropTypes from "prop-types";
 
-import { DeletePlaylistDialog } from "./deletePlaylistDialog";
+import { DeleteItemDialog } from "./deleteItemDialog";
 import { EditPlaylistDialog } from "./editPlaylistDialog";
 import { useDroppable } from "@dnd-kit/core";
 
@@ -39,7 +39,7 @@ export function PlaylistButton({ playlist }) {
           ref={setNodeRef}
           variant="ghost"
           className={`w-full justify-between items-center flex group ${
-            isOver ? "bg-green-200" : ""
+            isOver ? "bg-primary text-primary-foreground" : ""
           }`}
         >
           <div className="flex items-center min-w-0">
@@ -72,12 +72,12 @@ export function PlaylistButton({ playlist }) {
             Edit
           </ContextMenuItem>
         </EditPlaylistDialog>
-        <DeletePlaylistDialog playlist={playlist}>
+        <DeleteItemDialog item={playlist} apiPath="playlists">
           <ContextMenuItem>
             <TrashIcon className="mr-2" />
             Delete
           </ContextMenuItem>
-        </DeletePlaylistDialog>
+        </DeleteItemDialog>
       </ContextMenuContent>
     </ContextMenu>
   );

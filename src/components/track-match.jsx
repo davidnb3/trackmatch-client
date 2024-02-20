@@ -1,9 +1,10 @@
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { Pencil1Icon } from "@radix-ui/react-icons";
+import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { AddTracks } from "./add-tracks-dialog";
 import PropTypes from "prop-types";
+import { DeleteItemDialog } from "./deleteItemDialog";
 
 import { cn } from "@/lib/utils";
 import {
@@ -160,6 +161,15 @@ export function TrackMatch({ trackMatch, id, view }) {
             Edit
           </ContextMenuItem>
         </AddTracks>
+        <DeleteItemDialog
+          item={{ _id: trackMatch._id, name: "TrackMatch" }}
+          apiPath="trackmatches"
+        >
+          <ContextMenuItem>
+            <TrashIcon className="mr-2" />
+            Delete
+          </ContextMenuItem>
+        </DeleteItemDialog>
       </ContextMenuContent>
     </ContextMenu>
   );
