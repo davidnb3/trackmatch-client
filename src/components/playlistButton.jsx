@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -20,7 +20,12 @@ PlaylistButton.propTypes = {
   }),
 };
 
-export function PlaylistButton({ playlist }) {
+export function PlaylistButton({
+  playlist,
+  onPlaylistUpdate,
+  onPlaylistDelete,
+}) {
+  const location = useLocation();
   const { setNodeRef, isOver } = useDroppable({
     id: playlist._id,
   });
@@ -37,7 +42,11 @@ export function PlaylistButton({ playlist }) {
         <Button
           onClick={navigateToPlaylist}
           ref={setNodeRef}
-          variant="ghost"
+          variant={
+            location.pathname === `/playlists/${playlist._id}`
+              ? "secondary"
+              : "ghost"
+          }
           className={`w-full justify-between items-center flex group ${
             isOver ? "bg-primary text-primary-foreground" : ""
           }`}
@@ -66,13 +75,20 @@ export function PlaylistButton({ playlist }) {
         </Button>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-40">
-        <EditPlaylistDialog playlist={playlist}>
+        <EditPlaylistDialog
+          playlist={playlist}
+          onPlaylistUpdate={onPlaylistUpdate}
+        >
           <ContextMenuItem>
             <Pencil1Icon className="mr-2" />
             Edit
           </ContextMenuItem>
         </EditPlaylistDialog>
-        <DeleteItemDialog item={playlist} apiPath="playlists">
+        <DeleteItemDialog
+          item={playlist}
+          apiPath="playlists"
+          onItemDelete={onPlaylistDelete}
+        >
           <ContextMenuItem>
             <TrashIcon className="mr-2" />
             Delete

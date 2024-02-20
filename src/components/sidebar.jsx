@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
 import { PlaylistButton } from "./playlistButton";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import PropTypes from "prop-types";
 
@@ -12,9 +12,9 @@ Sidebar.propTypes = {
 };
 
 export function Sidebar({ className }) {
-  const pathname = window.location.pathname;
   const [playlists, setPlaylists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
 
   const getAllPlaylists = async () => {
     try {
@@ -60,6 +60,20 @@ export function Sidebar({ className }) {
     }
   };
 
+  const handlePlaylistUpdate = (updatedPlaylist) => {
+    setPlaylists(
+      playlists.map((playlist) =>
+        playlist._id === updatedPlaylist._id ? updatedPlaylist : playlist
+      )
+    );
+  };
+
+  const handlePlaylistDelete = (deletedItemId) => {
+    setPlaylists(
+      playlists.filter((playlist) => playlist._id !== deletedItemId)
+    );
+  };
+
   useEffect(() => {
     getAllPlaylists();
   }, []);
@@ -71,7 +85,7 @@ export function Sidebar({ className }) {
           <div className="space-y-1">
             <Link to="/">
               <Button
-                variant={pathname === "/" ? "secondary" : "ghost"}
+                variant={location.pathname === "/" ? "secondary" : "ghost"}
                 className="w-full justify-start"
               >
                 <svg
@@ -92,7 +106,9 @@ export function Sidebar({ className }) {
             </Link>
             <Link to="/browse">
               <Button
-                variant={pathname === "/browse" ? "secondary" : "ghost"}
+                variant={
+                  location.pathname === "/browse" ? "secondary" : "ghost"
+                }
                 className="w-full justify-start"
               >
                 <svg
@@ -116,7 +132,12 @@ export function Sidebar({ className }) {
           </div>
           <div className="space-y-1">
             <Link to="/library">
-              <Button variant="ghost" className="w-full justify-start">
+              <Button
+                variant={
+                  location.pathname === "/library" ? "secondary" : "ghost"
+                }
+                className="w-full justify-start"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -158,7 +179,12 @@ export function Sidebar({ className }) {
                 ?.slice()
                 .reverse()
                 .map((playlist) => (
-                  <PlaylistButton playlist={playlist} key={playlist._id} />
+                  <PlaylistButton
+                    playlist={playlist}
+                    key={playlist._id}
+                    onPlaylistUpdate={handlePlaylistUpdate}
+                    onPlaylistDelete={handlePlaylistDelete}
+                  />
                 ))}
             </div>
           )}

@@ -32,16 +32,18 @@ TrackMatch.propTypes = {
 export function TrackMatch({ trackMatch, id, view }) {
   const [playlists, setPlaylists] = useState([]);
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: `trackMatchCard-${id}`,
-    data: {
-      trackMatchId: trackMatch._id,
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: `trackMatchCard-${id}`,
+      data: {
+        trackMatchId: trackMatch._id,
+      },
+    });
 
   const style = transform
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        opacity: isDragging ? 0.7 : 1,
       }
     : undefined;
 

@@ -18,7 +18,7 @@ EditPlaylistDialog.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export function EditPlaylistDialog({ playlist, children }) {
+export function EditPlaylistDialog({ playlist, children, onPlaylistUpdate }) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(playlist.name);
   const [description, setDescription] = useState(playlist.description || "");
@@ -48,6 +48,10 @@ export function EditPlaylistDialog({ playlist, children }) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const updatedPlaylist = await response.json();
+
+    onPlaylistUpdate(updatedPlaylist);
 
     closeDialog();
   };

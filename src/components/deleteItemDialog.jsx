@@ -22,7 +22,7 @@ DeleteItemDialog.propTypes = {
   children: PropTypes.node,
 };
 
-export function DeleteItemDialog({ item, apiPath, children }) {
+export function DeleteItemDialog({ item, apiPath, children, onItemDelete }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -46,9 +46,13 @@ export function DeleteItemDialog({ item, apiPath, children }) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    closeDialog();
+    if (apiPath === "trackmatches") {
+      closeDialog();
+    }
 
     if (apiPath === "playlists") {
+      closeDialog();
+      onItemDelete(item._id);
       navigate("/");
     }
   };
