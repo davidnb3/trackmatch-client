@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 EditPlaylistDialog.propTypes = {
   playlist: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
+  onPlaylistUpdate: PropTypes.func.isRequired,
 };
 
 export function EditPlaylistDialog({ playlist, children, onPlaylistUpdate }) {
