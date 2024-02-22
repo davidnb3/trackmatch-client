@@ -128,10 +128,16 @@ const playlistsSlice = createSlice({
       .addCase(deleteTrackMatch.fulfilled, (state, action) => {
         state.entities.forEach((playlist) => {
           playlist.trackMatches = playlist.trackMatches.filter(
-            (trackMatch) => trackMatch._id !== action.payload
+            (trackMatchId) => trackMatchId !== action.payload
           );
         });
-        console.log(JSON.stringify(state.entities, null, 2));
+
+        if (state.selectedPlaylist) {
+          state.selectedPlaylist.trackMatches =
+            state.selectedPlaylist.trackMatches.filter(
+              (trackMatchId) => trackMatchId !== action.payload
+            );
+        }
       });
   },
 });

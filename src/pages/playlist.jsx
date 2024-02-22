@@ -9,12 +9,14 @@ import { TrackMatch } from "../components/track-match";
 import { AddTracks } from "../components/add-tracks-dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPlaylistById } from "../store/playlistsSlice";
+import { selectTrackMatchesForPlaylist } from "../store/selectors";
 
 export default function Playlist() {
   const { playlistId } = useParams();
   const dispatch = useDispatch();
   const playlist = useSelector((state) => state.playlists.selectedPlaylist);
   const status = useSelector((state) => state.playlists.trackMatchesLoading);
+  const playlistTrackMatches = useSelector(selectTrackMatchesForPlaylist);
 
   useEffect(() => {
     if (status === "idle") {
@@ -69,7 +71,7 @@ export default function Playlist() {
             ) : (
               ""
             )}
-            {playlist?.trackMatches?.map((trackMatch, index) => (
+            {playlistTrackMatches?.map((trackMatch, index) => (
               <TrackMatch
                 key={index}
                 trackMatch={trackMatch}
@@ -95,7 +97,7 @@ export default function Playlist() {
               columnWidth: "220px",
             }}
           >
-            {playlist?.trackMatches?.map((trackMatch, index) => (
+            {playlistTrackMatches?.map((trackMatch, index) => (
               <div
                 style={{ breakInside: "avoid", marginBottom: "1rem" }}
                 key={index}

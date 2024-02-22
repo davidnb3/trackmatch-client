@@ -5,6 +5,7 @@ export const fetchTrackMatches = createAsyncThunk(
   async () => {
     const response = await fetch("http://localhost:3001/trackmatches");
     const trackMatches = await response.json();
+    console.log("TRACKMATCHES", trackMatches);
     return trackMatches;
   }
 );

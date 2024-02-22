@@ -62,16 +62,15 @@ export default function Browse() {
                 <Skeleton className="h-[200px] w-[266px]" />
               </>
             ) : (
-              ""
+              trackMatches.map((trackMatch, index) => (
+                <TrackMatch
+                  key={index}
+                  trackMatch={trackMatch}
+                  id={index}
+                  view={"card"}
+                />
+              ))
             )}
-            {trackMatches.map((trackMatch, index) => (
-              <TrackMatch
-                key={index}
-                trackMatch={trackMatch}
-                id={index}
-                view={"card"}
-              />
-            ))}
           </div>
         </TabsContent>
         <TabsContent value="list" className="border-none p-0 outline-none">
