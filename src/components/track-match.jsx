@@ -36,7 +36,7 @@ export function TrackMatch({ trackMatch, id, view }) {
     useDraggable({
       id: `trackMatchCard-${id}`,
       data: {
-        trackMatchId: trackMatch._id,
+        trackMatchId: trackMatch?._id,
       },
     });
 

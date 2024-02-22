@@ -131,7 +131,6 @@ const playlistsSlice = createSlice({
             (trackMatchId) => trackMatchId !== action.payload
           );
         });
-
         if (state.selectedPlaylist) {
           state.selectedPlaylist.trackMatches =
             state.selectedPlaylist.trackMatches.filter(

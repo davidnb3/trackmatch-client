@@ -2,11 +2,17 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const fetchTrackMatches = createAsyncThunk(
   "trackMatches/fetchTrackMatches",
-  async () => {
-    const response = await fetch("http://localhost:3001/trackmatches");
-    const trackMatches = await response.json();
-    console.log("TRACKMATCHES", trackMatches);
-    return trackMatches;
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://localhost:3001/trackmatches");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const trackMatches = await response.json();
+      return trackMatches;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
 );
 

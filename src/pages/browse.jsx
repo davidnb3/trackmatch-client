@@ -5,21 +5,13 @@ import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { TrackMatch } from "../components/track-match";
 import { AddTracks } from "../components/add-tracks-dialog";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchTrackMatches } from "../store/trackMatchesSlice";
+import { useSelector } from "react-redux";
 
 export default function Browse() {
-  const dispatch = useDispatch();
   const trackMatches = useSelector((state) => state.trackMatches.entities);
   const trackMatchesLoading = useSelector(
     (state) => state.trackMatches.loading
   );
-
-  useEffect(() => {
-    dispatch(fetchTrackMatches());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="h-full px-4 py-6 lg:px-8">
