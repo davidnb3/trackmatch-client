@@ -1,10 +1,10 @@
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { AddTracks } from "./add-tracks-dialog";
 import PropTypes from "prop-types";
 import { DeleteItemDialog } from "./deleteItemDialog";
+import { useSelector } from "react-redux";
 
 import { cn } from "@/lib/utils";
 import {
@@ -30,7 +30,7 @@ TrackMatch.propTypes = {
 };
 
 export function TrackMatch({ trackMatch, id, view }) {
-  const [playlists, setPlaylists] = useState([]);
+  const playlists = useSelector((state) => state.playlists.entities);
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -46,23 +46,6 @@ export function TrackMatch({ trackMatch, id, view }) {
         opacity: isDragging ? 0.7 : 1,
       }
     : undefined;
-
-  const getAllPlaylists = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/playlists");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const playlists = await response.json();
-      setPlaylists(playlists);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  useEffect(() => {
-    getAllPlaylists();
-  }, []);
 
   if (!trackMatch?.tracks?.length) {
     // If there are no tracks, don't render anything

@@ -20,11 +20,7 @@ PlaylistButton.propTypes = {
   }),
 };
 
-export function PlaylistButton({
-  playlist,
-  onPlaylistUpdate,
-  onPlaylistDelete,
-}) {
+export function PlaylistButton({ playlist }) {
   const location = useLocation();
   const { setNodeRef, isOver } = useDroppable({
     id: playlist._id,
@@ -75,20 +71,13 @@ export function PlaylistButton({
         </Button>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-40">
-        <EditPlaylistDialog
-          playlist={playlist}
-          onPlaylistUpdate={onPlaylistUpdate}
-        >
+        <EditPlaylistDialog playlist={playlist}>
           <ContextMenuItem>
             <Pencil1Icon className="mr-2" />
             Edit
           </ContextMenuItem>
         </EditPlaylistDialog>
-        <DeleteItemDialog
-          item={playlist}
-          apiPath="playlists"
-          onItemDelete={onPlaylistDelete}
-        >
+        <DeleteItemDialog item={playlist} apiPath="playlists">
           <ContextMenuItem>
             <TrashIcon className="mr-2" />
             Delete

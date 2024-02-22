@@ -9,51 +9,31 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import PropTypes from "prop-types";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useDispatch } from "react-redux";
+import { updatePlaylist } from "../store/playlistsSlice";
 
 EditPlaylistDialog.propTypes = {
   playlist: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
-  onPlaylistUpdate: PropTypes.func.isRequired,
 };
 
-export function EditPlaylistDialog({ playlist, children, onPlaylistUpdate }) {
+export function EditPlaylistDialog({ playlist, children }) {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(playlist.name);
   const [description, setDescription] = useState(playlist.description || "");
+  const closeDialog = () => setIsOpen(false);
 
   const openDialog = (event) => {
     event.preventDefault();
     event.stopPropagation();
     setIsOpen(true);
   };
-  const closeDialog = () => setIsOpen(false);
 
-  const updatePlaylist = async () => {
-    const response = await fetch(
-      `http://localhost:3001/playlists/${playlist._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          description,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const updatedPlaylist = await response.json();
-
-    onPlaylistUpdate(updatedPlaylist);
-
+  const updatePlaylistHandler = () => {
+    dispatch(updatePlaylist({ id: playlist._id, name, description }));
     closeDialog();
   };
 
@@ -80,7 +60,7 @@ export function EditPlaylistDialog({ playlist, children, onPlaylistUpdate }) {
           <Button onClick={closeDialog} variant="outline">
             Cancel
           </Button>
-          <Button onClick={updatePlaylist}>Save</Button>
+          <Button onClick={updatePlaylistHandler}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

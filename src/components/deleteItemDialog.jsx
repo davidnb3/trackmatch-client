@@ -10,7 +10,9 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-
+import { useDispatch } from "react-redux";
+import { deleteTrackMatch } from "../store/trackMatchesSlice";
+import { deletePlaylist } from "../store/playlistsSlice";
 import { Button } from "@/components/ui/button";
 
 DeleteItemDialog.propTypes = {
@@ -22,7 +24,8 @@ DeleteItemDialog.propTypes = {
   children: PropTypes.node,
 };
 
-export function DeleteItemDialog({ item, apiPath, children, onItemDelete }) {
+export function DeleteItemDialog({ item, apiPath, children }) {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -35,24 +38,15 @@ export function DeleteItemDialog({ item, apiPath, children, onItemDelete }) {
   const closeDialog = () => setIsOpen(false);
 
   const deleteItem = async () => {
-    const response = await fetch(
-      `http://localhost:3001/${apiPath}/${item._id}`,
-      {
-        method: "DELETE",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
     if (apiPath === "trackmatches") {
-      closeDialog();
+      dispatch(deleteTrackMatch(item._id));
+    } else if (apiPath === "playlists") {
+      dispatch(deletePlaylist(item._id));
     }
+
+    closeDialog();
 
     if (apiPath === "playlists") {
-      closeDialog();
-      onItemDelete(item._id);
       navigate("/");
     }
   };

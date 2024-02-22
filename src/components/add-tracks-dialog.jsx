@@ -7,13 +7,15 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-
 import { useState } from "react";
 import PropTypes from "prop-types";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { useDispatch } from "react-redux";
+import {
+  createTrackMatch,
+  updateExistingTrackMatch,
+} from "../store/trackMatchesSlice";
 import { PlusCircledIcon, MinusCircledIcon } from "@radix-ui/react-icons";
 
 AddTracks.propTypes = {
@@ -25,7 +27,9 @@ AddTracks.propTypes = {
 };
 
 export function AddTracks({ children, trackMatch }) {
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+
   const openDialog = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -53,8 +57,17 @@ export function AddTracks({ children, trackMatch }) {
   );
 
   const handleInputChange = (index, field, value) => {
-    const newTracks = [...tracks];
-    newTracks[index][field] = value;
+    // Create a new copy of the tracks array
+    const newTracks = tracks.map((track, i) => {
+      // If this is the track we want to modify, return a new object
+      if (i === index) {
+        return { ...track, [field]: value };
+      }
+
+      // Otherwise, return the original track object
+      return track;
+    });
+
     setTracks(newTracks);
   };
 
@@ -87,60 +100,12 @@ export function AddTracks({ children, trackMatch }) {
         cover:
           "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
       },
-    ]); // Reset to two tracks
+    ]);
   };
 
   const removeTrack = () => {
     if (tracks.length > 1) {
       setTracks(tracks.slice(0, -1)); // Remove the last track
-    }
-  };
-
-  const createNewTrackMatch = async (tracks) => {
-    try {
-      const response = await fetch("http://localhost:3001/trackmatches", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tracks }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data);
-      closeDialog();
-      resetTracks();
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const updateExistingTrackMatch = async (tracks) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3001/trackmatches/${trackMatch._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ tracks }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data);
-      closeDialog();
-    } catch (error) {
-      console.error("Error:", error);
     }
   };
 
@@ -153,9 +118,12 @@ export function AddTracks({ children, trackMatch }) {
     }
 
     if (trackMatch) {
-      updateExistingTrackMatch(tracks);
+      dispatch(updateExistingTrackMatch({ id: trackMatch._id, tracks }));
+      closeDialog();
     } else {
-      createNewTrackMatch(tracks);
+      dispatch(createTrackMatch(tracks));
+      closeDialog();
+      resetTracks();
     }
   };
 

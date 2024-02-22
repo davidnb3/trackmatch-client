@@ -1,39 +1,27 @@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { TrackMatch } from "../components/track-match";
 import { AddTracks } from "../components/add-tracks-dialog";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPlaylistById } from "../store/playlistsSlice";
 
 export default function Playlist() {
   const { playlistId } = useParams();
-  const [playlist, setPlaylist] = useState(null);
-  const [trackMatches, setTrackMatches] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const playlist = useSelector((state) => state.playlists.selectedPlaylist);
+  const status = useSelector((state) => state.playlists.trackMatchesLoading);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/playlists/${playlistId}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setPlaylist(data);
-        setTrackMatches(data.trackMatches);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(
-          "There has been a problem with your fetch operation:",
-          error
-        );
-      });
-  }, [playlistId]);
+    if (status === "idle") {
+      dispatch(fetchPlaylistById(playlistId));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, playlistId]);
 
   return (
     <div className="h-full px-4 py-6 lg:px-8">
@@ -56,7 +44,7 @@ export default function Playlist() {
         </div>
         <TabsContent value="cards" className="border-none p-0 outline-none">
           <div className="mt-6 space-y-1">
-            {isLoading ? (
+            {status === "loading" ? (
               <Skeleton className="h-6 w-[200px]" />
             ) : (
               <>
@@ -71,7 +59,7 @@ export default function Playlist() {
           </div>
           <Separator className="my-4" />
           <div className="flex flex-wrap justify-start gap-4">
-            {isLoading ? (
+            {status === "loading" ? (
               <>
                 <Skeleton className="h-[200px] w-[266px]" />
                 <Skeleton className="h-[200px] w-[398px]" />
@@ -81,7 +69,7 @@ export default function Playlist() {
             ) : (
               ""
             )}
-            {trackMatches.map((trackMatch, index) => (
+            {playlist?.trackMatches?.map((trackMatch, index) => (
               <TrackMatch
                 key={index}
                 trackMatch={trackMatch}
@@ -107,7 +95,7 @@ export default function Playlist() {
               columnWidth: "220px",
             }}
           >
-            {trackMatches.map((trackMatch, index) => (
+            {playlist?.trackMatches?.map((trackMatch, index) => (
               <div
                 style={{ breakInside: "avoid", marginBottom: "1rem" }}
                 key={index}

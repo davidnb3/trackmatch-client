@@ -1,10 +1,12 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { PlaylistButton } from "./playlistButton";
 import { Link, useLocation } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchPlaylists, createPlaylist } from "../store/playlistsSlice";
 import PropTypes from "prop-types";
 
 Sidebar.propTypes = {
@@ -12,70 +14,20 @@ Sidebar.propTypes = {
 };
 
 export function Sidebar({ className }) {
-  const [playlists, setPlaylists] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const playlists = useSelector((state) => state.playlists.entities);
+  const isLoading = useSelector(
+    (state) => state.playlists.playlistsLoading === "loading"
+  );
   const location = useLocation();
 
-  const getAllPlaylists = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/playlists");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const playlists = await response.json();
-      setPlaylists(playlists);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const createNewPlaylist = async () => {
-    try {
-      const date = new Date();
-      const formattedDate = `${date.getDate()}.${
-        date.getMonth() + 1
-      }.${date.getFullYear()}`;
-
-      const response = await fetch("http://localhost:3001/playlists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: "New Playlist",
-          trackMatches: [],
-          description: `My new playlist created on ${formattedDate}`,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const newPlaylist = await response.json();
-      setPlaylists([...playlists, newPlaylist.playlist]);
-    } catch (error) {
-      console.error("Failed to add playlist:", error);
-    }
-  };
-
-  const handlePlaylistUpdate = (updatedPlaylist) => {
-    setPlaylists(
-      playlists.map((playlist) =>
-        playlist._id === updatedPlaylist._id ? updatedPlaylist : playlist
-      )
-    );
-  };
-
-  const handlePlaylistDelete = (deletedItemId) => {
-    setPlaylists(
-      playlists.filter((playlist) => playlist._id !== deletedItemId)
-    );
+  const handleCreateNewPlaylist = () => {
+    dispatch(createPlaylist());
   };
 
   useEffect(() => {
-    getAllPlaylists();
+    dispatch(fetchPlaylists());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -162,7 +114,7 @@ export function Sidebar({ className }) {
             Playlists
             <PlusCircledIcon
               className="h-4 w-4 cursor-pointer ml-2"
-              onClick={createNewPlaylist}
+              onClick={handleCreateNewPlaylist}
             />
           </h2>
           {isLoading ? (
@@ -179,12 +131,7 @@ export function Sidebar({ className }) {
                 ?.slice()
                 .reverse()
                 .map((playlist) => (
-                  <PlaylistButton
-                    playlist={playlist}
-                    key={playlist._id}
-                    onPlaylistUpdate={handlePlaylistUpdate}
-                    onPlaylistDelete={handlePlaylistDelete}
-                  />
+                  <PlaylistButton playlist={playlist} key={playlist._id} />
                 ))}
             </div>
           )}

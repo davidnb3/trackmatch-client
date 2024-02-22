@@ -5,32 +5,21 @@ import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { TrackMatch } from "../components/track-match";
 import { AddTracks } from "../components/add-tracks-dialog";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTrackMatches } from "../store/trackMatchesSlice";
 
 export default function Browse() {
-  const [allTrackMatches, setAllTrackMatches] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const trackMatches = useSelector((state) => state.trackMatches.entities);
+  const trackMatchesLoading = useSelector(
+    (state) => state.trackMatches.loading
+  );
 
   useEffect(() => {
-    getAllTrackMatches().then((trackMatches) =>
-      setAllTrackMatches(trackMatches)
-    );
+    dispatch(fetchTrackMatches());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const getAllTrackMatches = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/trackmatches");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const trackMatches = await response.json();
-      setIsLoading(false);
-      return Array.isArray(trackMatches) ? trackMatches : [];
-    } catch (error) {
-      console.error("Error:", error);
-      return [];
-    }
-  };
 
   return (
     <div className="h-full px-4 py-6 lg:px-8">
@@ -65,7 +54,7 @@ export default function Browse() {
           </div>
           <Separator className="my-4" />
           <div className="flex flex-wrap justify-start gap-4">
-            {isLoading ? (
+            {trackMatchesLoading === "loading" ? (
               <>
                 <Skeleton className="h-[200px] w-[266px]" />
                 <Skeleton className="h-[200px] w-[398px]" />
@@ -75,7 +64,7 @@ export default function Browse() {
             ) : (
               ""
             )}
-            {allTrackMatches.map((trackMatch, index) => (
+            {trackMatches.map((trackMatch, index) => (
               <TrackMatch
                 key={index}
                 trackMatch={trackMatch}
@@ -101,7 +90,7 @@ export default function Browse() {
               columnWidth: "220px",
             }}
           >
-            {allTrackMatches.map((trackMatch, index) => (
+            {trackMatches.map((trackMatch, index) => (
               <TrackMatch
                 key={index}
                 trackMatch={trackMatch}
