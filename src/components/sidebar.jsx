@@ -16,9 +16,7 @@ Sidebar.propTypes = {
 export function Sidebar({ className }) {
   const dispatch = useDispatch();
   const playlists = useSelector((state) => state.playlists.entities);
-  const isLoading = useSelector(
-    (state) => state.playlists.playlistsLoading === "loading"
-  );
+  const isLoading = useSelector((state) => state.playlists.playlistsLoading);
   const location = useLocation();
 
   const handleCreateNewPlaylist = () => {

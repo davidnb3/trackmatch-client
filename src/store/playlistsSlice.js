@@ -118,25 +118,25 @@ const playlistsSlice = createSlice({
   name: "playlists",
   initialState: {
     entities: [],
-    playlistsLoading: "idle",
-    trackMatchesLoading: "idle",
+    playlistsLoading: false,
+    trackMatchesLoading: false,
     selectedPlaylist: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchPlaylists.pending, (state) => {
-        state.playlistsLoading = "loading";
+        state.playlistsLoading = true;
       })
       .addCase(fetchPlaylists.fulfilled, (state, action) => {
-        state.playlistsLoading = "idle";
+        state.playlistsLoading = false;
         state.entities = action.payload;
       })
       .addCase(fetchPlaylistById.pending, (state) => {
-        state.trackMatchesLoading = "loading";
+        state.trackMatchesLoading = true;
       })
       .addCase(fetchPlaylistById.fulfilled, (state, action) => {
-        state.trackMatchesLoading = "idle";
+        state.trackMatchesLoading = false;
         state.selectedPlaylist = action.payload;
       })
       .addCase(createPlaylist.fulfilled, (state, action) => {

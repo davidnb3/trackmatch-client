@@ -9,21 +9,17 @@ import { TrackMatch } from "../components/track-match";
 import { AddTracks } from "../components/add-tracks-dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPlaylistById } from "../store/playlistsSlice";
-import { selectTrackMatchesForPlaylist } from "../store/selectors";
 
 export default function Playlist() {
   const { playlistId } = useParams();
   const dispatch = useDispatch();
   const playlist = useSelector((state) => state.playlists.selectedPlaylist);
-  const status = useSelector((state) => state.playlists.trackMatchesLoading);
-  const playlistTrackMatches = useSelector(selectTrackMatchesForPlaylist);
+  const isLoading = useSelector((state) => state.playlists.trackMatchesLoading);
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchPlaylistById(playlistId));
-    }
+    dispatch(fetchPlaylistById(playlistId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, playlistId]);
+  }, [playlistId]);
 
   return (
     <div className="h-full px-4 py-6 lg:px-8">
@@ -46,8 +42,11 @@ export default function Playlist() {
         </div>
         <TabsContent value="cards" className="border-none p-0 outline-none">
           <div className="mt-6 space-y-1">
-            {status === "loading" ? (
-              <Skeleton className="h-6 w-[200px]" />
+            {isLoading ? (
+              <>
+                <Skeleton className="h-6 w-[150px]" />
+                <Skeleton className="h-6 w-[300px]" />
+              </>
             ) : (
               <>
                 <h2 className="text-2xl font-semibold tracking-tight">
@@ -61,7 +60,7 @@ export default function Playlist() {
           </div>
           <Separator className="my-4" />
           <div className="flex flex-wrap justify-start gap-4">
-            {status === "loading" ? (
+            {isLoading ? (
               <>
                 <Skeleton className="h-[200px] w-[266px]" />
                 <Skeleton className="h-[200px] w-[398px]" />
@@ -69,7 +68,7 @@ export default function Playlist() {
                 <Skeleton className="h-[200px] w-[266px]" />
               </>
             ) : (
-              playlistTrackMatches
+              playlist?.trackMatches
                 ?.slice()
                 .reverse()
                 .map((trackMatch, index) => (
@@ -99,7 +98,7 @@ export default function Playlist() {
               columnWidth: "220px",
             }}
           >
-            {playlistTrackMatches
+            {playlist?.trackMatches
               ?.slice()
               .reverse()
               .map((trackMatch, index) => (
