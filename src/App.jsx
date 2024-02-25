@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { fetchTrackMatches } from "./store/trackMatchesSlice";
 import { DndContext } from "@dnd-kit/core";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { addTrackMatchToPlaylist } from "./store/playlistsSlice";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -19,18 +20,12 @@ export default function App() {
       const playlistId = over.id;
       const trackMatchId = event.active.data.current.trackMatchId;
 
-      fetch(`http://localhost:3001/playlists/${playlistId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ trackMatchId }),
-      });
+      dispatch(addTrackMatchToPlaylist({ playlistId, trackMatchId }));
     }
   };
 
   useEffect(() => {
-    dispatch(fetchTrackMatches());
+    dispatch(fetchTrackMatches({ page: 1 }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

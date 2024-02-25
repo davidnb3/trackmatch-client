@@ -69,16 +69,18 @@ export default function Playlist() {
                 <Skeleton className="h-[200px] w-[266px]" />
               </>
             ) : (
-              ""
+              playlistTrackMatches
+                ?.slice()
+                .reverse()
+                .map((trackMatch, index) => (
+                  <TrackMatch
+                    key={index}
+                    trackMatch={trackMatch}
+                    id={index}
+                    view={"card"}
+                  />
+                ))
             )}
-            {playlistTrackMatches?.map((trackMatch, index) => (
-              <TrackMatch
-                key={index}
-                trackMatch={trackMatch}
-                id={index}
-                view={"card"}
-              />
-            ))}
           </div>
         </TabsContent>
         <TabsContent value="list" className="border-none p-0 outline-none">
@@ -97,19 +99,22 @@ export default function Playlist() {
               columnWidth: "220px",
             }}
           >
-            {playlistTrackMatches?.map((trackMatch, index) => (
-              <div
-                style={{ breakInside: "avoid", marginBottom: "1rem" }}
-                key={index}
-              >
-                <TrackMatch
+            {playlistTrackMatches
+              ?.slice()
+              .reverse()
+              .map((trackMatch, index) => (
+                <div
+                  style={{ breakInside: "avoid", marginBottom: "1rem" }}
                   key={index}
-                  trackMatch={trackMatch}
-                  id={index}
-                  view={"list"}
-                />
-              </div>
-            ))}
+                >
+                  <TrackMatch
+                    key={index}
+                    trackMatch={trackMatch}
+                    id={index}
+                    view={"list"}
+                  />
+                </div>
+              ))}
           </div>
         </TabsContent>
       </Tabs>

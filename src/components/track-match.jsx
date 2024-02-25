@@ -4,7 +4,11 @@ import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { AddTracks } from "./add-tracks-dialog";
 import PropTypes from "prop-types";
 import { DeleteItemDialog } from "./deleteItemDialog";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createPlaylist,
+  addTrackMatchToPlaylist,
+} from "../store/playlistsSlice";
 
 import { cn } from "@/lib/utils";
 import {
@@ -30,7 +34,19 @@ TrackMatch.propTypes = {
 };
 
 export function TrackMatch({ trackMatch, id, view }) {
+  const dispatch = useDispatch();
   const playlists = useSelector((state) => state.playlists.entities);
+
+  const handleCreateNewPlaylist = (event) => {
+    event.preventDefault();
+    dispatch(createPlaylist());
+  };
+
+  const handleAddToPlaylist = (playlistId) => {
+    dispatch(
+      addTrackMatchToPlaylist({ playlistId, trackMatchId: trackMatch._id })
+    );
+  };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
@@ -114,28 +130,35 @@ export function TrackMatch({ trackMatch, id, view }) {
         <ContextMenuSub>
           <ContextMenuSubTrigger>Add to Playlist</ContextMenuSubTrigger>
           <ContextMenuSubContent className="w-48">
-            <ContextMenuItem>
+            <ContextMenuItem onClick={handleCreateNewPlaylist}>
               <PlusCircledIcon className="mr-2 h-4 w-4" />
               New Playlist
             </ContextMenuItem>
             <ContextMenuSeparator />
-            {playlists.map((playlist) => (
-              <ContextMenuItem key={playlist._id}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="mr-2 h-4 w-4"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M21 15V6M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 12H3M16 6H3M12 18H3" />
-                </svg>
-                {playlist.name}
-              </ContextMenuItem>
-            ))}
+            {Array.isArray(playlists) &&
+              playlists
+                .slice()
+                .reverse()
+                .map((playlist) => (
+                  <ContextMenuItem
+                    key={playlist._id}
+                    onClick={() => handleAddToPlaylist(playlist._id)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="mr-2 h-4 w-4"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M21 15V6M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 12H3M16 6H3M12 18H3" />
+                    </svg>
+                    {playlist.name}
+                  </ContextMenuItem>
+                ))}
           </ContextMenuSubContent>
         </ContextMenuSub>
         <ContextMenuSeparator />

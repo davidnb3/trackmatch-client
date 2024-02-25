@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { TrackMatch } from "../components/track-match";
 import { AddTracks } from "../components/add-tracks-dialog";
 import { useSelector } from "react-redux";
+import { PagePagination } from "../components/page-pagination";
 
 export default function Browse() {
   const trackMatches = useSelector((state) => state.trackMatches.entities);
@@ -46,7 +47,7 @@ export default function Browse() {
           </div>
           <Separator className="my-4" />
           <div className="flex flex-wrap justify-start gap-4">
-            {trackMatchesLoading === "loading" ? (
+            {trackMatchesLoading ? (
               <>
                 <Skeleton className="h-[200px] w-[266px]" />
                 <Skeleton className="h-[200px] w-[398px]" />
@@ -54,14 +55,17 @@ export default function Browse() {
                 <Skeleton className="h-[200px] w-[266px]" />
               </>
             ) : (
-              trackMatches.map((trackMatch, index) => (
-                <TrackMatch
-                  key={index}
-                  trackMatch={trackMatch}
-                  id={index}
-                  view={"card"}
-                />
-              ))
+              trackMatches
+                ?.slice()
+                .reverse()
+                .map((trackMatch, index) => (
+                  <TrackMatch
+                    key={index}
+                    trackMatch={trackMatch}
+                    id={index}
+                    view={"card"}
+                  />
+                ))
             )}
           </div>
         </TabsContent>
@@ -81,17 +85,21 @@ export default function Browse() {
               columnWidth: "220px",
             }}
           >
-            {trackMatches.map((trackMatch, index) => (
-              <TrackMatch
-                key={index}
-                trackMatch={trackMatch}
-                id={index}
-                view={"list"}
-              />
-            ))}
+            {trackMatches
+              ?.slice()
+              .reverse()
+              .map((trackMatch, index) => (
+                <TrackMatch
+                  key={index}
+                  trackMatch={trackMatch}
+                  id={index}
+                  view={"list"}
+                />
+              ))}
           </div>
         </TabsContent>
       </Tabs>
+      {!trackMatchesLoading && <PagePagination />}
     </div>
   );
 }

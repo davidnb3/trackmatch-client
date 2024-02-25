@@ -127,12 +127,16 @@ export function Sidebar({ className }) {
             </div>
           ) : (
             <div className="px-3 py-2">
-              {playlists
-                ?.slice()
-                .reverse()
-                .map((playlist) => (
-                  <PlaylistButton playlist={playlist} key={playlist._id} />
-                ))}
+              {Array.isArray(playlists) ? (
+                playlists
+                  .slice()
+                  .reverse()
+                  .map((playlist) => (
+                    <PlaylistButton playlist={playlist} key={playlist._id} />
+                  ))
+              ) : (
+                <div>Failed to load playlists</div>
+              )}
             </div>
           )}
         </div>

@@ -5,6 +5,9 @@ export const fetchPlaylists = createAsyncThunk(
   "playlists/fetchPlaylists",
   async () => {
     const response = await fetch("http://localhost:3001/playlists");
+    if (!response.ok) {
+      throw new Error("Failed to fetch playlists");
+    }
     const playlists = await response.json();
     return playlists;
   }
@@ -14,6 +17,9 @@ export const fetchPlaylistById = createAsyncThunk(
   "playlists/fetchPlaylistById",
   async (id) => {
     const response = await fetch(`http://localhost:3001/playlists/${id}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch playlist");
+    }
     const playlist = await response.json();
     return playlist;
   }
@@ -38,6 +44,10 @@ export const createPlaylist = createAsyncThunk(
         description: `My new playlist created on ${formattedDate}`,
       }),
     });
+
+    if (!response.ok) {
+      throw new Error("Failed to create playlist");
+    }
 
     const newPlaylist = await response.json();
 
@@ -81,6 +91,26 @@ export const deletePlaylist = createAsyncThunk(
     }
 
     return id;
+  }
+);
+
+export const addTrackMatchToPlaylist = createAsyncThunk(
+  "playlists/addTrackMatchToPlaylist",
+  async ({ playlistId, trackMatchId }) => {
+    const response = await fetch(
+      `http://localhost:3001/playlists/${playlistId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ trackMatchId }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to add track match to playlist");
+    }
   }
 );
 
