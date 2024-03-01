@@ -74,8 +74,9 @@ export default function Playlist() {
                 .map((trackMatch, index) => (
                   <TrackMatch
                     key={index}
-                    trackMatch={trackMatch}
+                    trackMatch={trackMatch.trackMatchId}
                     id={index}
+                    instanceId={trackMatch._id}
                     view={"card"}
                   />
                 ))
@@ -108,8 +109,9 @@ export default function Playlist() {
                 >
                   <TrackMatch
                     key={index}
-                    trackMatch={trackMatch}
+                    trackMatch={trackMatch.trackMatchId}
                     id={index}
+                    instanceId={trackMatch._id}
                     view={"list"}
                   />
                 </div>

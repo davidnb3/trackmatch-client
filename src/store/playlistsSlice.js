@@ -1,5 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { deleteTrackMatch } from "./trackMatchesSlice";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
+import {
+  deleteTrackMatch,
+  updateExistingTrackMatch,
+} from "./trackMatchesSlice";
 
 export const fetchPlaylists = createAsyncThunk(
   "playlists/fetchPlaylists",
@@ -96,7 +99,7 @@ export const deletePlaylist = createAsyncThunk(
 
 export const addTrackMatchToPlaylist = createAsyncThunk(
   "playlists/addTrackMatchToPlaylist",
-  async ({ playlistId, trackMatchId }) => {
+  async ({ playlistId, trackMatchId, confirmed }) => {
     const response = await fetch(
       `http://localhost:3001/playlists/${playlistId}`,
       {
@@ -104,13 +107,39 @@ export const addTrackMatchToPlaylist = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ trackMatchId }),
+        body: JSON.stringify({ trackMatchId, confirmed }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+
+    return data.message;
+  }
+);
+
+export const removeTrackMatchFromPlaylist = createAsyncThunk(
+  "playlists/removeTrackMatchFromPlaylist",
+  async ({ playlistId, instanceId }) => {
+    const response = await fetch(
+      `http://localhost:3001/playlists/${playlistId}/trackMatches`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ instanceId }),
       }
     );
 
     if (!response.ok) {
       throw new Error("Failed to add track match to playlist");
     }
+
+    return { playlistId, instanceId };
   }
 );
 
@@ -149,6 +178,13 @@ const playlistsSlice = createSlice({
         if (index !== -1) {
           state.entities[index] = action.payload;
         }
+        if (
+          state.selectedPlaylist &&
+          state.selectedPlaylist._id === action.payload._id
+        ) {
+          state.selectedPlaylist.name = action.payload.name;
+          state.selectedPlaylist.description = action.payload.description;
+        }
       })
       .addCase(deletePlaylist.fulfilled, (state, action) => {
         state.entities = state.entities.filter(
@@ -166,6 +202,37 @@ const playlistsSlice = createSlice({
             state.selectedPlaylist.trackMatches.filter(
               (trackMatchId) => trackMatchId !== action.payload
             );
+        }
+      })
+      .addCase(updateExistingTrackMatch.fulfilled, (state, action) => {
+        if (
+          state.selectedPlaylist &&
+          state.selectedPlaylist.trackMatches.find(
+            (trackMatch) =>
+              trackMatch.trackMatchId._id === action.payload.trackMatch._id
+          )
+        ) {
+          const selectedTrackMatchIndex =
+            state.selectedPlaylist.trackMatches.findIndex(
+              (trackMatch) =>
+                trackMatch.trackMatchId._id === action.payload.trackMatch._id
+            );
+
+          state.selectedPlaylist.trackMatches[
+            selectedTrackMatchIndex
+          ].trackMatchId = action.payload.trackMatch;
+        }
+      })
+      .addCase(removeTrackMatchFromPlaylist.fulfilled, (state, action) => {
+        const { playlistId, instanceId } = action.payload;
+        if (
+          state.selectedPlaylist &&
+          state.selectedPlaylist._id === playlistId
+        ) {
+          state.selectedPlaylist.trackMatches =
+            state.selectedPlaylist.trackMatches.filter((trackMatch) => {
+              return trackMatch._id !== instanceId;
+            });
         }
       });
   },

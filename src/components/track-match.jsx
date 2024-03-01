@@ -1,16 +1,8 @@
-import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { Card, CardContent } from "@/components/ui/card";
-import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { AddTracks } from "./add-tracks-dialog";
-import PropTypes from "prop-types";
-import { DeleteItemDialog } from "./deleteItemDialog";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  createPlaylist,
-  addTrackMatchToPlaylist,
-} from "../store/playlistsSlice";
-
-import { cn } from "@/lib/utils";
+  Pencil1Icon,
+  TrashIcon,
+  MinusCircledIcon,
+} from "@radix-ui/react-icons";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -21,8 +13,20 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-
+import {
+  createPlaylist,
+  addTrackMatchToPlaylist,
+  removeTrackMatchFromPlaylist,
+} from "../store/playlistsSlice";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { Card, CardContent } from "@/components/ui/card";
+import { AddTracks } from "./add-tracks-dialog";
+import PropTypes from "prop-types";
+import { DeleteItemDialog } from "./deleteItemDialog";
+import { useDispatch, useSelector } from "react-redux";
+import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
+import { useParams } from "react-router-dom";
 
 TrackMatch.propTypes = {
   trackMatch: PropTypes.shape({
@@ -31,9 +35,11 @@ TrackMatch.propTypes = {
   }),
   id: PropTypes.number,
   view: PropTypes.string,
+  instanceId: PropTypes.string,
 };
 
-export function TrackMatch({ trackMatch, id, view }) {
+export function TrackMatch({ trackMatch, id, view, instanceId }) {
+  const { playlistId } = useParams();
   const dispatch = useDispatch();
   const playlists = useSelector((state) => state.playlists.entities);
 
@@ -45,6 +51,15 @@ export function TrackMatch({ trackMatch, id, view }) {
   const handleAddToPlaylist = (playlistId) => {
     dispatch(
       addTrackMatchToPlaylist({ playlistId, trackMatchId: trackMatch._id })
+    );
+  };
+
+  const handleRemoveClick = () => {
+    dispatch(
+      removeTrackMatchFromPlaylist({
+        playlistId,
+        instanceId,
+      })
     );
   };
 
@@ -169,6 +184,12 @@ export function TrackMatch({ trackMatch, id, view }) {
             Edit
           </ContextMenuItem>
         </AddTracks>
+        {playlistId && (
+          <ContextMenuItem onClick={handleRemoveClick}>
+            <MinusCircledIcon className="mr-2" />
+            Remove
+          </ContextMenuItem>
+        )}
         <DeleteItemDialog
           item={{ _id: trackMatch._id, name: "TrackMatch" }}
           apiPath="trackmatches"

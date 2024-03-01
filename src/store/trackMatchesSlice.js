@@ -45,8 +45,6 @@ export const createTrackMatch = createAsyncThunk(
 export const updateExistingTrackMatch = createAsyncThunk(
   "trackMatches/updateExistingTrackMatch",
   async ({ id, tracks }, { rejectWithValue }) => {
-    console.log("ID", id);
-    console.log("TRACKS", tracks);
     try {
       const response = await fetch(`http://localhost:3001/trackmatches/${id}`, {
         method: "PUT",
