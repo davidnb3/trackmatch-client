@@ -15,7 +15,7 @@ import { useState } from "react";
 
 export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
-  const [trackMatchId, setTrackMatchId] = useState(null);
+  const [trackMatch, setTrackMatch] = useState(null);
   const dispatch = useDispatch();
   const [showDialog, setShowDialog] = useState(false);
   const handleDragEnd = (event) => {
@@ -23,16 +23,16 @@ export default function App() {
 
     if (over) {
       const playlistId = over.id;
-      const trackMatchId = event.active.data.current.trackMatchId;
+      const trackMatch = event.active.data.current.trackMatch;
 
       dispatch(
-        addTrackMatchToPlaylist({ playlistId, trackMatchId, confirmed: false })
+        addTrackMatchToPlaylist({ playlistId, trackMatch, confirmed: false })
       )
         .then((action) => {
           console.log(action.payload);
           if (action.payload === "TrackMatch already in playlist") {
             setPlaylistId(playlistId);
-            setTrackMatchId(trackMatchId);
+            setTrackMatch(trackMatch);
             setShowDialog(true);
           }
         })
@@ -44,7 +44,7 @@ export default function App() {
 
   const handleAddToPlaylist = () => {
     dispatch(
-      addTrackMatchToPlaylist({ playlistId, trackMatchId, confirmed: true })
+      addTrackMatchToPlaylist({ playlistId, trackMatch, confirmed: true })
     );
     setShowDialog(false);
   };

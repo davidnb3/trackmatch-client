@@ -99,7 +99,7 @@ export const deletePlaylist = createAsyncThunk(
 
 export const addTrackMatchToPlaylist = createAsyncThunk(
   "playlists/addTrackMatchToPlaylist",
-  async ({ playlistId, trackMatchId, confirmed }) => {
+  async ({ playlistId, trackMatch, confirmed }) => {
     const response = await fetch(
       `http://localhost:3001/playlists/${playlistId}`,
       {
@@ -107,7 +107,7 @@ export const addTrackMatchToPlaylist = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ trackMatchId, confirmed }),
+        body: JSON.stringify({ trackMatch, confirmed }),
       }
     );
 
@@ -117,6 +117,7 @@ export const addTrackMatchToPlaylist = createAsyncThunk(
       throw new Error(data.message);
     }
 
+    console.log(data.message);
     return data.message;
   }
 );
@@ -194,13 +195,13 @@ const playlistsSlice = createSlice({
       .addCase(deleteTrackMatch.fulfilled, (state, action) => {
         state.entities.forEach((playlist) => {
           playlist.trackMatches = playlist.trackMatches.filter(
-            (trackMatchId) => trackMatchId !== action.payload
+            (trackMatch) => trackMatch !== action.payload
           );
         });
         if (state.selectedPlaylist) {
           state.selectedPlaylist.trackMatches =
             state.selectedPlaylist.trackMatches.filter(
-              (trackMatchId) => trackMatchId !== action.payload
+              (trackMatch) => trackMatch !== action.payload
             );
         }
       })
@@ -209,18 +210,18 @@ const playlistsSlice = createSlice({
           state.selectedPlaylist &&
           state.selectedPlaylist.trackMatches.find(
             (trackMatch) =>
-              trackMatch.trackMatchId._id === action.payload.trackMatch._id
+              trackMatch.trackMatch._id === action.payload.trackMatch._id
           )
         ) {
           const selectedTrackMatchIndex =
             state.selectedPlaylist.trackMatches.findIndex(
               (trackMatch) =>
-                trackMatch.trackMatchId._id === action.payload.trackMatch._id
+                trackMatch.trackMatch._id === action.payload.trackMatch._id
             );
 
           state.selectedPlaylist.trackMatches[
             selectedTrackMatchIndex
-          ].trackMatchId = action.payload.trackMatch;
+          ].trackMatch = action.payload.trackMatch;
         }
       })
       .addCase(removeTrackMatchFromPlaylist.fulfilled, (state, action) => {

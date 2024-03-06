@@ -50,7 +50,7 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
 
   const handleAddToPlaylist = (playlistId) => {
     dispatch(
-      addTrackMatchToPlaylist({ playlistId, trackMatchId: trackMatch._id })
+      addTrackMatchToPlaylist({ playlistId, trackMatch: trackMatch._id })
     );
   };
 
@@ -67,7 +67,7 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
     useDraggable({
       id: `trackMatchCard-${id}`,
       data: {
-        trackMatchId: trackMatch?._id,
+        trackMatch: trackMatch?._id,
       },
     });
 

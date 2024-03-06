@@ -59,7 +59,6 @@ export const updateExistingTrackMatch = createAsyncThunk(
       }
 
       const data = await response.json();
-      console.log("DATA", data);
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
