@@ -29,7 +29,6 @@ export default function App() {
         addTrackMatchToPlaylist({ playlistId, trackMatch, confirmed: false })
       )
         .then((action) => {
-          console.log(action.payload);
           if (action.payload === "TrackMatch already in playlist") {
             setPlaylistId(playlistId);
             setTrackMatch(trackMatch);

@@ -117,7 +117,6 @@ export const addTrackMatchToPlaylist = createAsyncThunk(
       throw new Error(data.message);
     }
 
-    console.log(data.message);
     return data.message;
   }
 );
@@ -195,13 +194,13 @@ const playlistsSlice = createSlice({
       .addCase(deleteTrackMatch.fulfilled, (state, action) => {
         state.entities.forEach((playlist) => {
           playlist.trackMatches = playlist.trackMatches.filter(
-            (trackMatch) => trackMatch !== action.payload
+            (trackMatch) => trackMatch.trackMatch !== action.payload
           );
         });
         if (state.selectedPlaylist) {
           state.selectedPlaylist.trackMatches =
             state.selectedPlaylist.trackMatches.filter(
-              (trackMatch) => trackMatch !== action.payload
+              (trackMatch) => trackMatch.trackMatch._id !== action.payload
             );
         }
       })

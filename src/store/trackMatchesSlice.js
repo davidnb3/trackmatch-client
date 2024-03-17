@@ -68,16 +68,19 @@ export const updateExistingTrackMatch = createAsyncThunk(
 
 export const deleteTrackMatch = createAsyncThunk(
   "trackMatches/deleteTrackMatch",
-  async (id) => {
-    const response = await fetch(`http://localhost:3001/trackmatches/${id}`, {
-      method: "DELETE",
-    });
+  async (trackMatchId) => {
+    const response = await fetch(
+      `http://localhost:3001/trackmatches/${trackMatchId}`,
+      {
+        method: "DELETE",
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return id;
+    return trackMatchId;
   }
 );
 
