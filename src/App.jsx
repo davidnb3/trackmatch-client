@@ -5,19 +5,19 @@ import Songs from "./pages/library.jsx";
 import { Menu } from "./components/menu";
 import { Sidebar } from "./components/sidebar";
 import { ConfirmDialog } from "./components/confirmDialog";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchTrackMatches } from "./store/trackMatchesSlice";
 import { DndContext } from "@dnd-kit/core";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { addTrackMatchToPlaylist } from "./store/playlistsSlice";
-import { useState } from "react";
 
 export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
   const [trackMatch, setTrackMatch] = useState(null);
-  const dispatch = useDispatch();
   const [showDialog, setShowDialog] = useState(false);
+  const dispatch = useDispatch();
+
   const handleDragEnd = (event) => {
     const { over } = event;
 
@@ -50,6 +50,26 @@ export default function App() {
 
   useEffect(() => {
     dispatch(fetchTrackMatches({ page: 1 }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    // Check if the access token is already in localStorage
+    if (!localStorage.getItem("spotifyAccessToken")) {
+      // Send a request to the server to get the access token
+      fetch("http://localhost:3001/auth/getToken")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Save the access token to localStorage
+          localStorage.setItem("spotifyAccessToken", data.accessToken);
+        })
+        .catch((error) => console.error(error));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
