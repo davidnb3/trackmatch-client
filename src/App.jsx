@@ -54,8 +54,15 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    // Check if the access token is already in localStorage
-    if (!localStorage.getItem("spotifyAccessToken")) {
+    // Send the request only when the previous access token has expired
+    const currentTime = Math.floor(Date.now() / 1000);
+    const expirationTime = localStorage.getItem("spotifyTokenExpirationTime");
+
+    if (
+      !localStorage.getItem("spotifyAccessToken") ||
+      !expirationTime ||
+      currentTime >= expirationTime
+    ) {
       // Send a request to the server to get the access token
       fetch("http://localhost:3001/auth/getToken")
         .then((response) => {
@@ -67,6 +74,10 @@ export default function App() {
         .then((data) => {
           // Save the access token to localStorage
           localStorage.setItem("spotifyAccessToken", data.accessToken);
+          localStorage.setItem(
+            "spotifyTokenExpirationTime",
+            currentTime + data.expiresIn
+          );
         })
         .catch((error) => console.error(error));
     }
