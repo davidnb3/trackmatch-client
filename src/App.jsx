@@ -1,7 +1,7 @@
 import Home from "./pages/home.jsx";
 import Browse from "./pages/browse.jsx";
 import Playlist from "./pages/playlist.jsx";
-import Songs from "./pages/library.jsx";
+import Library from "./pages/library.jsx";
 import { Menu } from "./components/menu";
 import { Sidebar } from "./components/sidebar";
 import { ConfirmDialog } from "./components/confirmDialog";
@@ -101,7 +101,7 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/browse" element={<Browse />} />
-                  <Route path="/library" element={<Songs />} />
+                  <Route path="/library" element={<Library />} />
                   <Route path="/playlists/:playlistId" element={<Playlist />} />
                 </Routes>
               </div>
