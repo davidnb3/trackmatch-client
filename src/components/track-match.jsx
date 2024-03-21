@@ -88,9 +88,9 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
       <ContextMenuTrigger>
         <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
           {view === "card" && (
-            <Card className="inline-flex justify-center shadow-md">
+            <Card className="inline-flex justify-center shadow-md p-4 space-x-4">
               {trackMatch?.tracks?.map((track, index) => (
-                <CardContent key={index} className="space-y-3">
+                <CardContent key={index} className="space-y-3 p-0">
                   <div className="overflow-hidden rounded-md w-[100px]">
                     <img
                       src={track.cover}

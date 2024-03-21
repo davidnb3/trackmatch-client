@@ -23,9 +23,6 @@ export default function Browse() {
               Cards
             </TabsTrigger>
             <TabsTrigger value="list">List</TabsTrigger>
-            <TabsTrigger value="live" disabled>
-              Live
-            </TabsTrigger>
           </TabsList>
           <div className="ml-auto">
             <AddTracks>
