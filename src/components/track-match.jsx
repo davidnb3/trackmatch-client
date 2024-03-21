@@ -95,7 +95,11 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
                     <img
                       src={track.cover}
                       alt={track.name}
-                      className={cn("hover:scale-105", "aspect-square")}
+                      className={cn(
+                        "hover:scale-105",
+                        "aspect-square",
+                        "h-24 w-24"
+                      )}
                     />
                   </div>
                   <div className="space-y-1 text-sm w-[100px]">

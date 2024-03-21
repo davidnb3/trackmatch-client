@@ -68,18 +68,15 @@ export default function Playlist() {
                 <Skeleton className="h-[200px] w-[266px]" />
               </>
             ) : (
-              playlist?.trackMatches
-                ?.slice()
-                .reverse()
-                .map((trackMatch, index) => (
-                  <TrackMatch
-                    key={index}
-                    trackMatch={trackMatch.trackMatch}
-                    id={index}
-                    instanceId={trackMatch._id}
-                    view={"card"}
-                  />
-                ))
+              playlist?.trackMatches?.map((trackMatch, index) => (
+                <TrackMatch
+                  key={index}
+                  trackMatch={trackMatch.trackMatch}
+                  id={index}
+                  instanceId={trackMatch._id}
+                  view={"card"}
+                />
+              ))
             )}
           </div>
         </TabsContent>
