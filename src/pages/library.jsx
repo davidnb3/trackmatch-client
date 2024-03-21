@@ -9,7 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Library() {
   const tracks = useSelector((state) => state.tracks.entities);
+  const trackMatches = useSelector((state) => state.trackMatches.entities);
   const [selectedArtist, setSelectedArtist] = useState(null);
+  const [artists, setArtists] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -18,12 +20,36 @@ export default function Library() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Get a list of unique artists
-  const artists = [...new Set(tracks.map((track) => track.artist))];
+  useEffect(() => {
+    const artistMap = new Map(
+      tracks.map((track) => [
+        track.artistSpotifyId,
+        { artist: track.artist, id: track.artistSpotifyId },
+      ])
+    );
+
+    const uniqueArtists = Array.from(artistMap.values());
+
+    const fetchArtistImage = async (artist) => {
+      const accessToken = localStorage.getItem("spotifyAccessToken");
+      const response = await fetch(
+        `https://api.spotify.com/v1/artists/${artist.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      const data = await response.json();
+      return { ...artist, image: data.images[0]?.url };
+    };
+
+    Promise.all(uniqueArtists.map(fetchArtistImage)).then(setArtists);
+  }, [tracks, trackMatches]);
 
   // Get the tracks of the selected artist
   const selectedArtistTracks = tracks.filter(
-    (track) => track.artist === selectedArtist
+    (track) => track.artist === selectedArtist?.artist
   );
 
   return (
@@ -41,24 +67,43 @@ export default function Library() {
       </div>
 
       <div className="mt-6 space-y-1">
-        <h2 className="text-2xl font-semibold tracking-tight">Library</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">Your Library</h2>
         <p className="text-sm text-muted-foreground">Everything in one place</p>
       </div>
       <Separator className="my-4" />
-      <div className="h-full px-4 py-6 lg:px-8 flex">
+      <div className="h-full flex">
         <div className="w-1/2">
-          <ul>
+          <ul className="list-none">
             {artists.map((artist) => (
-              <li key={artist} onClick={() => setSelectedArtist(artist)}>
-                {artist}
+              <li
+                key={artist.id}
+                onClick={() => setSelectedArtist(artist)}
+                className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded"
+              >
+                <img
+                  src={artist.image}
+                  alt={artist.artist}
+                  className="w-10 h-10 mr-4"
+                />
+                <span className="font-medium text-lg">{artist.artist}</span>
               </li>
             ))}
           </ul>
         </div>
         <div className="w-1/2">
-          <ul>
+          <ul className="list-none">
             {selectedArtistTracks.map((track) => (
-              <li key={track._id}>{track.name}</li>
+              <li
+                key={track._id}
+                className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded"
+              >
+                <img
+                  src={track.cover}
+                  alt={track.name}
+                  className="w-10 h-10 mr-4"
+                />
+                <span className="font-medium text-lg">{track.name}</span>
+              </li>
             ))}
           </ul>
         </div>
