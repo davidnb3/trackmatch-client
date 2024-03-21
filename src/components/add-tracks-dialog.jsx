@@ -8,7 +8,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { camelotNotationMajor, camelotNotationMinor } from "@/lib/utils";
 import PropTypes from "prop-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,7 +50,7 @@ export function AddTracks({ children, trackMatch }) {
       },
     ]
   );
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
   const openDialog = (event) => {
@@ -58,49 +59,10 @@ export function AddTracks({ children, trackMatch }) {
     setIsOpen(true);
   };
 
-  const closeDialog = () => setIsOpen(false);
-
-  const handleInputChange = (index, field, value) => {
-    // Create a new copy of the tracks array
-    const newTracks = tracks.map((track, i) => {
-      // If this is the track we want to modify, return a new object
-      if (i === index) {
-        return { ...track, [field]: value };
-      }
-
-      // Otherwise, return the original track object
-      return track;
-    });
-
-    setTracks(newTracks);
-
-    if (field === "name" || field === "artist") {
-      // Update the search query for this track
-      const track = newTracks[index];
-      setSearchQuery(`${track.artist} ${track.name}`);
-      console.log(`${track.artist} ${track.name}`);
-    }
-  };
-
-  const handleSelectResult = (index, result) => {
-    // Create a new copy of the tracks array
-    const newTracks = tracks.map((track, i) => {
-      // If this is the track we want to modify, return a new object
-      if (i === index) {
-        return {
-          ...track,
-          name: result.name,
-          artist: result.artist,
-          cover: result.cover,
-        };
-      }
-
-      // Otherwise, return the original track object
-      return track;
-    });
-
-    setTracks(newTracks);
-    setSearchQuery("");
+  const closeDialog = () => {
+    setSearchResults([]);
+    resetTracks();
+    setIsOpen(false);
   };
 
   const addTrack = () => {
@@ -111,7 +73,7 @@ export function AddTracks({ children, trackMatch }) {
         artist: "",
         key: "",
         cover:
-          "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+          "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
       },
     ]);
   };
@@ -123,14 +85,14 @@ export function AddTracks({ children, trackMatch }) {
         artist: "",
         key: "",
         cover:
-          "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+          "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
       },
       {
         name: "",
         artist: "",
         key: "",
         cover:
-          "https://images.unsplash.com/photo-1615247001958-f4bc92fa6a4a?w=300&dpr=2&q=80",
+          "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
       },
     ]);
   };
@@ -151,42 +113,135 @@ export function AddTracks({ children, trackMatch }) {
 
     if (trackMatch) {
       dispatch(updateExistingTrackMatch({ id: trackMatch._id, tracks }));
-      closeDialog();
     } else {
       dispatch(createTrackMatch(tracks));
-      closeDialog();
       resetTracks();
+    }
+
+    setSearchQuery("");
+    setSearchResults([]);
+    closeDialog();
+  };
+
+  const handleSelectResult = async (index, result) => {
+    // Create a new copy of the tracks array
+    const key = await getTrackKey(result);
+
+    const newTracks = tracks.map((track, i) => {
+      // If this is the track we want to modify, return a new object
+      if (i === index) {
+        return {
+          ...track,
+          name: result.name,
+          artist: result.artist,
+          key: key,
+          cover: result.cover,
+        };
+      }
+
+      // Otherwise, return the original track object
+      return track;
+    });
+
+    setTracks(newTracks);
+    setSearchQuery(null);
+    setSearchResults([]);
+  };
+
+  const getTrackKey = (selectedTrack) => {
+    return new Promise((resolve, reject) => {
+      const accessToken = localStorage.getItem("spotifyAccessToken");
+      fetch(`https://api.spotify.com/v1/audio-features/${selectedTrack.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          let mode = data.mode;
+          let camelotKey;
+          if (mode === 0) {
+            camelotKey = camelotNotationMinor[data.key];
+          } else if (mode === 1) {
+            camelotKey = camelotNotationMajor[data.key];
+          } else {
+            console.error("Invalid mode:", mode);
+          }
+
+          resolve(camelotKey);
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  };
+
+  function debounce(func, delay) {
+    let debounceTimer;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
+
+  const handleInputChange = (index, field, value) => {
+    // Create a new copy of the tracks array
+    const newTracks = tracks.map((track, i) => {
+      // If this is the track we want to modify, return a new object
+      if (i === index) {
+        return { ...track, [field]: value };
+      }
+      // Otherwise, return the original track object
+      return track;
+    });
+
+    setTracks(newTracks);
+
+    if (field === "name" || field === "artist") {
+      // Update the search query for this track
+      const track = newTracks[index];
+      const newSearchQuery = `${track.artist} ${track.name}`;
+      setSearchQuery(newSearchQuery);
+      debouncedSearch(newSearchQuery);
     }
   };
 
-  useEffect(() => {
-    if (searchQuery) {
-      const accessToken = localStorage.getItem("spotifyAccessToken");
-      fetch(
-        `https://api.spotify.com/v1/search?query=${encodeURIComponent(
-          searchQuery
-        )}&type=track&limit=20`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          const searchResults = data.tracks.items.map((item) => ({
-            name: item.name,
-            artist: item.artists[0].name,
-            cover: item.album.images[0].url,
-          }));
-          setSearchResults(searchResults);
-          console.log(searchResults);
-        })
-        .catch((error) => console.error(error));
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchQuery]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSearch = useCallback(
+    debounce((searchQuery) => {
+      console.log(searchQuery);
+      if (searchQuery && searchQuery.trim() !== "") {
+        const accessToken = localStorage.getItem("spotifyAccessToken");
+        fetch(
+          `https://api.spotify.com/v1/search?query=${encodeURIComponent(
+            searchQuery
+          )}&type=track&limit=20`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const searchResults = data.tracks.items.map((item) => ({
+              id: item.id,
+              name: item.name,
+              artist: item.artists[0].name,
+              cover: item.album.images[0].url,
+            }));
+            setSearchResults(searchResults);
+          })
+          .catch((error) => console.error(error));
+      } else {
+        setSearchResults([]);
+      }
+    }, 500),
+    [] // dependencies
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -219,35 +274,50 @@ export function AddTracks({ children, trackMatch }) {
                   id={`trackName${index + 1}`}
                   value={track.name}
                   type="text"
-                  placeholder="Another Night"
+                  placeholder="Track Name"
                   className="col-span-3"
                   aria-label={`track name ${index + 1}`}
                   onChange={(e) => {
                     handleInputChange(index, "name", e.target.value);
                     setActiveTrackIndex(index);
                   }}
+                  onBlur={() => {
+                    setTimeout(() => {
+                      setSearchResults([]);
+                    }, 200);
+                  }}
                 />
                 <Input
                   id={`artist${index + 1}`}
                   value={track.artist}
                   type="text"
-                  placeholder="Kosmical"
+                  placeholder="Artist"
                   className="col-span-2"
                   aria-label={`artist ${index + 1}`}
                   onChange={(e) =>
                     handleInputChange(index, "artist", e.target.value)
                   }
+                  onBlur={() => {
+                    setTimeout(() => {
+                      setSearchResults([]);
+                    }, 200);
+                  }}
                 />
                 <Input
                   id={`songKey${index + 1}`}
                   value={track.key}
                   type="text"
-                  placeholder="4A"
+                  placeholder="Key"
                   className="col-span-1"
                   aria-label={`song key ${index + 1}`}
                   onChange={(e) =>
                     handleInputChange(index, "key", e.target.value)
                   }
+                  onBlur={() => {
+                    setTimeout(() => {
+                      setSearchResults([]);
+                    }, 200);
+                  }}
                 />
               </div>
               {activeTrackIndex === index && searchResults.length > 0 && (
