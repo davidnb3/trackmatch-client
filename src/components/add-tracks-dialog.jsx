@@ -37,6 +37,7 @@ export function AddTracks({ children, trackMatch }) {
       {
         name: "",
         artist: "",
+        artistSpotifyId: "",
         key: "",
         cover:
           "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
@@ -44,6 +45,7 @@ export function AddTracks({ children, trackMatch }) {
       {
         name: "",
         artist: "",
+        artistSpotifyId: "",
         key: "",
         cover:
           "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
@@ -71,6 +73,7 @@ export function AddTracks({ children, trackMatch }) {
       {
         name: "",
         artist: "",
+        artistSpotifyId: "",
         key: "",
         cover:
           "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
@@ -83,6 +86,7 @@ export function AddTracks({ children, trackMatch }) {
       {
         name: "",
         artist: "",
+        artistSpotifyId: "",
         key: "",
         cover:
           "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
@@ -90,6 +94,7 @@ export function AddTracks({ children, trackMatch }) {
       {
         name: "",
         artist: "",
+        artistSpotifyId: "",
         key: "",
         cover:
           "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
@@ -101,80 +106,6 @@ export function AddTracks({ children, trackMatch }) {
     if (tracks.length > 1) {
       setTracks(tracks.slice(0, -1)); // Remove the last track
     }
-  };
-
-  const submitTrackMatch = (tracks) => {
-    for (let track of tracks) {
-      if (!track.name || !track.artist || !track.key || !track.cover) {
-        alert("Please fill in all fields.");
-        return;
-      }
-    }
-
-    if (trackMatch) {
-      dispatch(updateExistingTrackMatch({ id: trackMatch._id, tracks }));
-    } else {
-      dispatch(createTrackMatch(tracks));
-      resetTracks();
-    }
-
-    setSearchQuery("");
-    setSearchResults([]);
-    closeDialog();
-  };
-
-  const handleSelectResult = async (index, result) => {
-    // Create a new copy of the tracks array
-    const key = await getTrackKey(result);
-
-    const newTracks = tracks.map((track, i) => {
-      // If this is the track we want to modify, return a new object
-      if (i === index) {
-        return {
-          ...track,
-          name: result.name,
-          artist: result.artist,
-          key: key,
-          cover: result.cover,
-        };
-      }
-
-      // Otherwise, return the original track object
-      return track;
-    });
-
-    setTracks(newTracks);
-    setSearchQuery(null);
-    setSearchResults([]);
-  };
-
-  const getTrackKey = (selectedTrack) => {
-    return new Promise((resolve, reject) => {
-      const accessToken = localStorage.getItem("spotifyAccessToken");
-      fetch(`https://api.spotify.com/v1/audio-features/${selectedTrack.id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          let mode = data.mode;
-          let camelotKey;
-          if (mode === 0) {
-            camelotKey = camelotNotationMinor[data.key];
-          } else if (mode === 1) {
-            camelotKey = camelotNotationMajor[data.key];
-          } else {
-            console.error("Invalid mode:", mode);
-          }
-
-          resolve(camelotKey);
-        })
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
   };
 
   function debounce(func, delay) {
@@ -212,7 +143,6 @@ export function AddTracks({ children, trackMatch }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((searchQuery) => {
-      console.log(searchQuery);
       if (searchQuery && searchQuery.trim() !== "") {
         const accessToken = localStorage.getItem("spotifyAccessToken");
         fetch(
@@ -227,12 +157,23 @@ export function AddTracks({ children, trackMatch }) {
         )
           .then((response) => response.json())
           .then((data) => {
-            const searchResults = data.tracks.items.map((item) => ({
-              id: item.id,
-              name: item.name,
-              artist: item.artists[0].name,
-              cover: item.album.images[0].url,
-            }));
+            const searchResults = data.tracks.items.map((item) => {
+              // Try to find the image with a height of 300
+              let selectedImage = item.album.images.find(
+                (image) => image.height === 300
+              );
+
+              return {
+                trackId: item.id,
+                name: item.name,
+                artist: item.artists[0].name,
+                artistSpotifyId: item.artists[0].id,
+                // If there's no image with a height of 300, just take the first one in the array
+                cover: selectedImage
+                  ? selectedImage.url
+                  : item.album.images[0].url,
+              };
+            });
             setSearchResults(searchResults);
           })
           .catch((error) => console.error(error));
@@ -242,6 +183,85 @@ export function AddTracks({ children, trackMatch }) {
     }, 500),
     [] // dependencies
   );
+
+  const handleSelectResult = async (index, result) => {
+    // Create a new copy of the tracks array
+    const key = await getTrackKey(result);
+
+    const newTracks = tracks.map((track, i) => {
+      // If this is the track we want to modify, return a new object
+      if (i === index) {
+        return {
+          ...track,
+          name: result.name,
+          artist: result.artist,
+          artistSpotifyId: result.artistSpotifyId,
+          key: key,
+          cover: result.cover,
+        };
+      }
+
+      // Otherwise, return the original track object
+      return track;
+    });
+
+    setTracks(newTracks);
+    setSearchQuery(null);
+    setSearchResults([]);
+  };
+
+  const getTrackKey = (selectedTrack) => {
+    return new Promise((resolve, reject) => {
+      const accessToken = localStorage.getItem("spotifyAccessToken");
+      fetch(
+        `https://api.spotify.com/v1/audio-features/${selectedTrack.trackId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          // Mode represents either major (1) or minor (0)
+          let mode = data.mode;
+          let camelotKey;
+          if (mode === 0) {
+            camelotKey = camelotNotationMinor[data.key];
+          } else if (mode === 1) {
+            camelotKey = camelotNotationMajor[data.key];
+          } else {
+            console.error("Invalid mode:", mode);
+          }
+
+          resolve(camelotKey);
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  };
+
+  const submitTrackMatch = (tracks) => {
+    for (let track of tracks) {
+      if (!track.name || !track.artist || !track.key || !track.cover) {
+        alert("Please fill in all fields.");
+        return;
+      }
+    }
+
+    if (trackMatch) {
+      dispatch(updateExistingTrackMatch({ id: trackMatch._id, tracks }));
+    } else {
+      dispatch(createTrackMatch(tracks));
+      resetTracks();
+    }
+
+    setSearchQuery("");
+    setSearchResults([]);
+    closeDialog();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
