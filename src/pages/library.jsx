@@ -1,3 +1,4 @@
+import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,14 @@ import { AddTracks } from "../components/add-tracks-dialog";
 import { useEffect, useState } from "react";
 import { fetchTracks } from "../store/tracksSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { TrashIcon } from "@radix-ui/react-icons";
+import { DeleteItemDialog } from "../components/deleteItemDialog";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export default function Library() {
   const tracks = useSelector((state) => state.tracks.entities);
@@ -18,7 +27,7 @@ export default function Library() {
   useEffect(() => {
     dispatch(fetchTracks());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [trackMatches]);
 
   useEffect(() => {
     const artistMap = new Map(
@@ -45,7 +54,7 @@ export default function Library() {
     };
 
     Promise.all(uniqueArtists.map(fetchArtistImage)).then(setArtists);
-  }, [tracks, trackMatches]);
+  }, [tracks]);
 
   // Get the tracks of the selected artist
   const selectedArtistTracks = tracks.filter(
@@ -60,7 +69,7 @@ export default function Library() {
           <AddTracks>
             <Button>
               <PlusCircledIcon className="mr-2 h-4 w-4" />
-              Add Tracks
+              Add TrackMatch
             </Button>
           </AddTracks>
         </div>
@@ -71,39 +80,60 @@ export default function Library() {
         <p className="text-sm text-muted-foreground">Everything in one place</p>
       </div>
       <Separator className="my-4" />
-      <div className="h-full flex">
-        <div className="w-1/2">
+      <div className="flex">
+        <div
+          className="w-1/2 overflow-y-auto"
+          style={{ maxHeight: "calc(100vh - 15rem)" }}
+        >
           <ul className="list-none">
             {artists.map((artist) => (
               <li
                 key={artist.id}
                 onClick={() => setSelectedArtist(artist)}
-                className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded"
+                className="flex items-center cursor-pointer hover:bg-secondary p-2"
               >
                 <img
                   src={artist.image}
                   alt={artist.artist}
                   className="w-10 h-10 mr-4"
                 />
-                <span className="font-medium text-lg">{artist.artist}</span>
+                <span className="text-lg">{artist.artist}</span>
               </li>
             ))}
           </ul>
         </div>
-        <div className="w-1/2">
+        <div
+          className="w-1/2 overflow-y-auto"
+          style={{ maxHeight: "calc(100vh - 15rem)" }}
+        >
           <ul className="list-none">
             {selectedArtistTracks.map((track) => (
-              <li
-                key={track._id}
-                className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded"
-              >
-                <img
-                  src={track.cover}
-                  alt={track.name}
-                  className="w-10 h-10 mr-4"
-                />
-                <span className="font-medium text-lg">{track.name}</span>
-              </li>
+              <React.Fragment key={track._id}>
+                <ContextMenu>
+                  <ContextMenuTrigger>
+                    <li className="flex items-center cursor-pointer hover:bg-secondary p-2">
+                      <img
+                        src={track.cover}
+                        alt={track.name}
+                        className="w-10 h-10 mr-4"
+                      />
+                      <span className="text-lg">{track.name}</span>
+                    </li>
+                  </ContextMenuTrigger>
+                  <ContextMenuContent className="w-46">
+                    <ContextMenuItem>
+                      <PlusCircledIcon className="mr-2" />
+                      Create TrackMatch
+                    </ContextMenuItem>
+                    <DeleteItemDialog item={track} apiPath="tracks">
+                      <ContextMenuItem>
+                        <TrashIcon className="mr-2" />
+                        Delete
+                      </ContextMenuItem>
+                    </DeleteItemDialog>
+                  </ContextMenuContent>
+                </ContextMenu>
+              </React.Fragment>
             ))}
           </ul>
         </div>
