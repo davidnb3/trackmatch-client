@@ -63,7 +63,11 @@ export function AddTracks({ children, trackMatch }) {
 
   const closeDialog = () => {
     setSearchResults([]);
-    resetTracks();
+
+    if (!trackMatch) {
+      resetTracks();
+    }
+
     setIsOpen(false);
   };
 
@@ -383,10 +387,12 @@ export function AddTracks({ children, trackMatch }) {
 
           <div className="flex">
             <PlusCircledIcon
+              aria-label="Add track"
               className="mr-2 h-4 w-4 cursor-pointer"
               onClick={addTrack}
             />
             <MinusCircledIcon
+              aria-label="Remove track"
               className="mr-2 h-4 w-4 cursor-pointer"
               onClick={removeTrack}
             />
@@ -398,7 +404,7 @@ export function AddTracks({ children, trackMatch }) {
             Cancel
           </Button>
           <Button type="submit" onClick={() => submitTrackMatch(tracks)}>
-            Add tracks
+            Save TrackMatch
           </Button>
         </DialogFooter>
       </DialogContent>

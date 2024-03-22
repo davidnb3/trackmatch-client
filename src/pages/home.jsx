@@ -26,7 +26,7 @@ export default function Home() {
             <AddTracks>
               <Button>
                 <PlusCircledIcon className="mr-2 h-4 w-4" />
-                Add Tracks
+                Add TrackMatch
               </Button>
             </AddTracks>
           </div>

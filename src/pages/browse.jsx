@@ -28,7 +28,7 @@ export default function Browse() {
             <AddTracks>
               <Button>
                 <PlusCircledIcon className="mr-2 h-4 w-4" />
-                Add Tracks
+                Add TrackMatch
               </Button>
             </AddTracks>
           </div>
@@ -80,6 +80,7 @@ export default function Browse() {
             style={{
               columnCount: "auto",
               columnWidth: "220px",
+              columnGap: "20px",
             }}
           >
             {trackMatches

@@ -119,7 +119,7 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
           )}
           {view === "list" && (
             <div style={{ breakInside: "avoid", marginBottom: "1rem" }}>
-              <Card className="flex flex-col w-64 pr-2 shadow-md">
+              <Card className="flex flex-col w-64 shadow-md">
                 {trackMatch?.tracks?.map((track, index) => (
                   <div key={index} className="flex items-center space-x-3">
                     <img

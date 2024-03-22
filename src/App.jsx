@@ -95,7 +95,10 @@ export default function App() {
         />
         <div className="border-t">
           <div className="bg-background">
-            <div className="grid lg:grid-cols-5">
+            <div
+              className="grid lg:grid-cols-5"
+              style={{ height: "calc(100vh - 40px)" }}
+            >
               <Sidebar className="hidden lg:block" />
               <div className="col-span-3 lg:col-span-4 lg:border-l">
                 <Routes>
