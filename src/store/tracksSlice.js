@@ -16,6 +16,23 @@ export const fetchTracks = createAsyncThunk(
   }
 );
 
+export const deleteTrack = createAsyncThunk(
+  "tracks/deleteTrack",
+  async (id, thunkAPI) => {
+    try {
+      const response = await fetch(`http://localhost:3001/tracks/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return { id };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 export const tracksSlice = createSlice({
   name: "tracks",
   initialState: { entities: [], loading: false },
@@ -28,6 +45,11 @@ export const tracksSlice = createSlice({
       .addCase(fetchTracks.fulfilled, (state, action) => {
         state.loading = false;
         state.entities = action.payload.data;
+      })
+      .addCase(deleteTrack.fulfilled, (state, action) => {
+        state.entities = state.entities.filter(
+          (track) => track._id !== action.payload.id
+        );
       });
   },
 });

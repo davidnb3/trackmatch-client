@@ -13,6 +13,7 @@ import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { deleteTrackMatch } from "../store/trackMatchesSlice";
 import { deletePlaylist } from "../store/playlistsSlice";
+import { deleteTrack } from "../store/tracksSlice";
 import { Button } from "@/components/ui/button";
 
 DeleteItemDialog.propTypes = {
@@ -40,8 +41,14 @@ export function DeleteItemDialog({ item, apiPath, children }) {
   const deleteItem = async () => {
     if (apiPath === "trackmatches") {
       dispatch(deleteTrackMatch(item._id));
-    } else if (apiPath === "playlists") {
+    }
+
+    if (apiPath === "playlists") {
       dispatch(deletePlaylist(item._id));
+    }
+
+    if (apiPath === "tracks") {
+      dispatch(deleteTrack(item._id));
     }
 
     closeDialog();
@@ -63,6 +70,9 @@ export function DeleteItemDialog({ item, apiPath, children }) {
             This will delete <span className="font-bold">{item.name}</span> from
             your library and <span className="font-bold">cannot be undone</span>
             .
+            {apiPath === "tracks"
+              ? " This will also remove the track from all your TrackMatches."
+              : ""}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
