@@ -9,6 +9,7 @@ import { fetchTracks } from "../store/tracksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { DeleteItemDialog } from "../components/deleteItemDialog";
+import { tracksSlice } from "../store/tracksSlice";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -19,6 +20,7 @@ import {
 export default function Library() {
   const tracks = useSelector((state) => state.tracks.entities);
   const trackMatches = useSelector((state) => state.trackMatches.entities);
+  const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [artists, setArtists] = useState([]);
 
@@ -56,15 +58,22 @@ export default function Library() {
     Promise.all(uniqueArtists.map(fetchArtistImage)).then(setArtists);
   }, [tracks]);
 
-  // Get the tracks of the selected artist
-  const selectedArtistTracks = tracks.filter(
-    (track) => track.artist === selectedArtist?.artist
+  const selectedArtistTracksMap = new Map(
+    tracks
+      .filter((track) => track.artist === selectedArtist?.artist)
+      .map((track) => [`${track.name}`, track])
   );
+
+  const selectedArtistTracks = Array.from(selectedArtistTracksMap.values());
+
+  const addPendingTrack = (track) => {
+    dispatch(tracksSlice.actions.addPendingTrack(track));
+  };
 
   return (
     <div className="h-full px-4 py-6 lg:px-8">
-      <div className="space-between flex items-center">
-        <Input type="text" placeholder="Search" className="max-w-md" />
+      <div className="space-between flex items-center gap-4 lg:gap-8">
+        <Input type="text" placeholder="Search" />
         <div className="ml-auto">
           <AddTracks>
             <Button>
@@ -107,8 +116,8 @@ export default function Library() {
           style={{ maxHeight: "calc(100vh - 15rem)" }}
         >
           <ul className="list-none">
-            {selectedArtistTracks.map((track) => (
-              <React.Fragment key={track._id}>
+            {selectedArtistTracks.map((track, index) => (
+              <React.Fragment key={index}>
                 <ContextMenu>
                   <ContextMenuTrigger>
                     <li className="flex items-center cursor-pointer hover:bg-secondary p-2">
@@ -121,9 +130,11 @@ export default function Library() {
                     </li>
                   </ContextMenuTrigger>
                   <ContextMenuContent className="w-46">
-                    <ContextMenuItem>
+                    <ContextMenuItem onClick={() => addPendingTrack(track)}>
                       <PlusCircledIcon className="mr-2" />
-                      Create TrackMatch
+                      {pendingTracks[0].name == ""
+                        ? "Create TrackMatch"
+                        : "Add to TrackMatch"}
                     </ContextMenuItem>
                     <DeleteItemDialog item={track} apiPath="tracks">
                       <ContextMenuItem>

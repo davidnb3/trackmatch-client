@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import disc from "../assets/disc.svg";
 
 export const fetchTracks = createAsyncThunk(
   "tracks/fetchTracks",
@@ -16,17 +17,17 @@ export const fetchTracks = createAsyncThunk(
   }
 );
 
-export const deleteTrack = createAsyncThunk(
-  "tracks/deleteTrack",
-  async (id, thunkAPI) => {
+export const deleteTrackByName = createAsyncThunk(
+  "tracks/deleteTrackByName",
+  async (name, thunkAPI) => {
     try {
-      const response = await fetch(`http://localhost:3001/tracks/${id}`, {
+      const response = await fetch(`http://localhost:3001/tracks/${name}`, {
         method: "DELETE",
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return { id };
+      return { name };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -35,8 +36,54 @@ export const deleteTrack = createAsyncThunk(
 
 export const tracksSlice = createSlice({
   name: "tracks",
-  initialState: { entities: [], loading: false },
-  reducers: {},
+  initialState: {
+    entities: [],
+    loading: false,
+    pendingTracks: [
+      {
+        name: "",
+        artist: "",
+        artistSpotifyId: "",
+        key: "",
+        cover: disc,
+      },
+      {
+        name: "",
+        artist: "",
+        artistSpotifyId: "",
+        key: "",
+        cover: disc,
+      },
+    ],
+  },
+  reducers: {
+    addPendingTrack: (state, action) => {
+      const index = state.pendingTracks.findIndex((track) => !track.name);
+      if (index !== -1) {
+        state.pendingTracks = [{ ...action.payload }];
+      } else {
+        state.pendingTracks.push(action.payload);
+      }
+    },
+    resetPendingTracks: (state) => {
+      state.pendingTracks = [
+        {
+          name: "",
+          artist: "",
+          artistSpotifyId: "",
+          key: "",
+          cover: disc,
+        },
+        {
+          name: "",
+          artist: "",
+          artistSpotifyId: "",
+          key: "",
+          cover: disc,
+        },
+      ];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTracks.pending, (state) => {
@@ -46,9 +93,9 @@ export const tracksSlice = createSlice({
         state.loading = false;
         state.entities = action.payload.data;
       })
-      .addCase(deleteTrack.fulfilled, (state, action) => {
+      .addCase(deleteTrackByName.fulfilled, (state, action) => {
         state.entities = state.entities.filter(
-          (track) => track._id !== action.payload.id
+          (track) => track.name !== action.payload.name
         );
       });
   },

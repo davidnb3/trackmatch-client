@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { deleteTrackMatch } from "../store/trackMatchesSlice";
 import { deletePlaylist } from "../store/playlistsSlice";
-import { deleteTrack } from "../store/tracksSlice";
+import { deleteTrackByName } from "../store/tracksSlice";
 import { Button } from "@/components/ui/button";
 
 DeleteItemDialog.propTypes = {
@@ -48,7 +48,7 @@ export function DeleteItemDialog({ item, apiPath, children }) {
     }
 
     if (apiPath === "tracks") {
-      dispatch(deleteTrack(item._id));
+      dispatch(deleteTrackByName(item.name));
     }
 
     closeDialog();

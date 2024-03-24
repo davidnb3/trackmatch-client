@@ -7,6 +7,7 @@ import { TrackMatch } from "../components/track-match";
 import { AddTracks } from "../components/add-tracks-dialog";
 import { useSelector } from "react-redux";
 import { PagePagination } from "../components/page-pagination";
+import { Input } from "@/components/ui/input";
 
 export default function Browse() {
   const trackMatches = useSelector((state) => state.trackMatches.entities);
@@ -17,13 +18,14 @@ export default function Browse() {
   return (
     <div className="h-full px-4 py-6 lg:px-8">
       <Tabs defaultValue="cards" className="h-full space-y-6">
-        <div className="space-between flex items-center">
+        <div className="space-between flex items-center gap-4 lg:gap-8">
           <TabsList>
             <TabsTrigger value="cards" className="relative">
               Cards
             </TabsTrigger>
-            <TabsTrigger value="list">List</TabsTrigger>
+            <TabsTrigger value="columns">Columns</TabsTrigger>
           </TabsList>
+          <Input type="text" placeholder="Search" />
           <div className="ml-auto">
             <AddTracks>
               <Button>
@@ -66,7 +68,7 @@ export default function Browse() {
             )}
           </div>
         </TabsContent>
-        <TabsContent value="list" className="border-none p-0 outline-none">
+        <TabsContent value="columns" className="border-none p-0 outline-none">
           <div className="mt-6 space-y-1">
             <h2 className="text-2xl font-semibold tracking-tight">
               Browse the Collection
