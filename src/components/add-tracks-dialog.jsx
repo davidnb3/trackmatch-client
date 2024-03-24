@@ -8,12 +8,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { useState, useCallback } from "react";
+import { useSelector } from "react-redux";
+import { useState, useCallback, useEffect } from "react";
 import { camelotNotationMajor, camelotNotationMinor } from "@/lib/utils";
 import PropTypes from "prop-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
+import { tracksSlice } from "@/store/tracksSlice";
+import disc from "@/assets/disc.svg";
 import {
   createTrackMatch,
   updateExistingTrackMatch,
@@ -30,30 +33,16 @@ AddTracks.propTypes = {
 
 export function AddTracks({ children, trackMatch }) {
   const dispatch = useDispatch();
+  const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
   const [activeTrackIndex, setActiveTrackIndex] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
-  const [tracks, setTracks] = useState(
-    trackMatch?.tracks || [
-      {
-        name: "",
-        artist: "",
-        artistSpotifyId: "",
-        key: "",
-        cover:
-          "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
-      },
-      {
-        name: "",
-        artist: "",
-        artistSpotifyId: "",
-        key: "",
-        cover:
-          "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
-      },
-    ]
-  );
+  const [tracks, setTracks] = useState(trackMatch?.tracks || pendingTracks);
   const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setTracks(trackMatch?.tracks || pendingTracks);
+  }, [pendingTracks, trackMatch]);
 
   const openDialog = (event) => {
     event.preventDefault();
@@ -63,12 +52,13 @@ export function AddTracks({ children, trackMatch }) {
 
   const closeDialog = () => {
     setSearchResults([]);
+    setIsOpen(false);
 
     if (!trackMatch) {
       resetTracks();
     }
 
-    setIsOpen(false);
+    dispatch(tracksSlice.actions.resetPendingTracks());
   };
 
   const addTrack = () => {
@@ -79,8 +69,7 @@ export function AddTracks({ children, trackMatch }) {
         artist: "",
         artistSpotifyId: "",
         key: "",
-        cover:
-          "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
+        cover: disc,
       },
     ]);
   };
@@ -92,16 +81,14 @@ export function AddTracks({ children, trackMatch }) {
         artist: "",
         artistSpotifyId: "",
         key: "",
-        cover:
-          "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
+        cover: disc,
       },
       {
         name: "",
         artist: "",
         artistSpotifyId: "",
         key: "",
-        cover:
-          "https://i.scdn.co/image/ab67616d0000b2733d891016ec5a952aab252db1",
+        cover: disc,
       },
     ]);
   };
@@ -255,10 +242,15 @@ export function AddTracks({ children, trackMatch }) {
       }
     }
 
+    // Get rid of the _id and __v fields from MongoDB
+    const cleanedTracks = tracks.map(({ _id, __v, ...rest }) => rest);
+
     if (trackMatch) {
+      console.log("updateExistingTrackMatch", { id: trackMatch._id, tracks });
       dispatch(updateExistingTrackMatch({ id: trackMatch._id, tracks }));
     } else {
-      dispatch(createTrackMatch(tracks));
+      console.log("createTrackMatch", tracks);
+      dispatch(createTrackMatch(cleanedTracks));
       resetTracks();
     }
 
@@ -270,7 +262,20 @@ export function AddTracks({ children, trackMatch }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild onClick={openDialog}>
-        {children}
+        <div className="relative">
+          {children}
+
+          {pendingTracks[0].name !== "" && (
+            <div
+              className="notification-badge absolute h-4 w-4 rounded-full bg-primary-500 animate-ping"
+              style={{
+                backgroundImage: `url(${
+                  pendingTracks[pendingTracks.length - 1].cover
+                })`,
+              }}
+            />
+          )}
+        </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -318,9 +323,10 @@ export function AddTracks({ children, trackMatch }) {
                   placeholder="Artist"
                   className="col-span-2"
                   aria-label={`artist ${index + 1}`}
-                  onChange={(e) =>
-                    handleInputChange(index, "artist", e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleInputChange(index, "artist", e.target.value);
+                    setActiveTrackIndex(index);
+                  }}
                   onBlur={() => {
                     setTimeout(() => {
                       setSearchResults([]);

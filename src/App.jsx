@@ -12,6 +12,8 @@ import { DndContext } from "@dnd-kit/core";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { addTrackMatchToPlaylist } from "./store/playlistsSlice";
 
+import "./App.css";
+
 export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
   const [trackMatch, setTrackMatch] = useState(null);
