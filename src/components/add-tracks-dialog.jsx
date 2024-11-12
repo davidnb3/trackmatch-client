@@ -37,6 +37,7 @@ export function AddTracks({ children, trackMatch }) {
   const [activeTrackIndex, setActiveTrackIndex] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   const [tracks, setTracks] = useState(trackMatch?.tracks || pendingTracks);
+  // eslint-disable-next-line no-unused-vars
   const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -243,6 +244,7 @@ export function AddTracks({ children, trackMatch }) {
     }
 
     // Get rid of the _id and __v fields from MongoDB
+    // eslint-disable-next-line no-unused-vars
     const cleanedTracks = tracks.map(({ _id, __v, ...rest }) => rest);
 
     if (trackMatch) {
