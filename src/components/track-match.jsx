@@ -29,8 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { useParams } from "react-router-dom";
-import useAuth from "@/hooks/useAuth";
-import useSpotifyPlayer from "@/hooks/useSpotifyPlayer";
+import { useSpotifyPlayer } from "@/contexts/useSpotifyPlayer";
 
 TrackMatch.propTypes = {
   trackMatch: PropTypes.shape({
@@ -46,8 +45,7 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
   const { playlistId } = useParams();
   const dispatch = useDispatch();
   const playlists = useSelector((state) => state.playlists.entities);
-  const { accessToken } = useAuth();
-  const { play } = useSpotifyPlayer(accessToken);
+  const { play } = useSpotifyPlayer();
 
   const handleCreateNewPlaylist = (event) => {
     event.preventDefault();

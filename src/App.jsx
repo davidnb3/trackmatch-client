@@ -12,15 +12,16 @@ import { fetchTrackMatches } from "./store/trackMatchesSlice";
 import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { addTrackMatchToPlaylist } from "./store/playlistsSlice";
+import { SpotifyPlayerProvider } from "@/contexts/useSpotifyPlayer.jsx";
+import useAuth from "./hooks/useAuth.jsx";
 
 import "./App.css";
-import useAuth from "./hooks/useAuth.jsx";
 
 export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
   const [trackMatch, setTrackMatch] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  const { hasToken } = useAuth();
+  const { hasToken, accessToken } = useAuth();
   const dispatch = useDispatch();
 
   const handleDragEnd = (event) => {
@@ -70,34 +71,39 @@ export default function App() {
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={[pointerSensor]}>
-      <Router>
-        <Menu />
-        <ConfirmDialog
-          open={showDialog}
-          onOpenChange={setShowDialog}
-          onAddToPlaylist={handleAddToPlaylist}
-        />
-        <div className="border-t">
-          <div className="bg-background">
-            <div
-              className="grid lg:grid-cols-5"
-              style={{ height: "calc(100vh - 40px)" }}
-            >
-              <Sidebar className="hidden lg:block" />
-              <div className="col-span-3 lg:col-span-4 lg:border-l">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/browse" element={<Browse />} />
-                  <Route path="/library" element={<Library />} />
-                  <Route path="/playlists/:playlistId" element={<Playlist />} />
-                </Routes>
+    <SpotifyPlayerProvider accessToken={accessToken}>
+      <DndContext onDragEnd={handleDragEnd} sensors={[pointerSensor]}>
+        <Router>
+          <Menu />
+          <ConfirmDialog
+            open={showDialog}
+            onOpenChange={setShowDialog}
+            onAddToPlaylist={handleAddToPlaylist}
+          />
+          <div className="border-t">
+            <div className="bg-background">
+              <div
+                className="grid lg:grid-cols-5"
+                style={{ height: "calc(100vh - 40px)" }}
+              >
+                <Sidebar className="hidden lg:block" />
+                <div className="col-span-3 lg:col-span-4 lg:border-l">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/browse" element={<Browse />} />
+                    <Route path="/library" element={<Library />} />
+                    <Route
+                      path="/playlists/:playlistId"
+                      element={<Playlist />}
+                    />
+                  </Routes>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </Router>
-    </DndContext>
+        </Router>
+      </DndContext>
+    </SpotifyPlayerProvider>
   );
 }

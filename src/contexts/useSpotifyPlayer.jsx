@@ -1,11 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const SpotifyPlayerContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSpotifyPlayer = () => {
   return useContext(SpotifyPlayerContext);
 };
 
+// eslint-disable-next-line react/prop-types
 export const SpotifyPlayerProvider = ({ accessToken, children }) => {
   const [player, setPlayer] = useState(null);
   const [deviceId, setDeviceId] = useState(null);
@@ -20,6 +22,7 @@ export const SpotifyPlayerProvider = ({ accessToken, children }) => {
     document.body.appendChild(script);
 
     window.onSpotifyWebPlaybackSDKReady = () => {
+      // eslint-disable-next-line no-undef
       const player = new Spotify.Player({
         name: "Web Playback SDK",
         getOAuthToken: (cb) => {
