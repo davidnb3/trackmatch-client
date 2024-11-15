@@ -2,6 +2,7 @@ import Home from "./pages/home.jsx";
 import Browse from "./pages/browse.jsx";
 import Playlist from "./pages/playlist.jsx";
 import Library from "./pages/library.jsx";
+import Login from "./pages/login.jsx";
 import { Menu } from "./components/menu";
 import { Sidebar } from "./components/sidebar";
 import { ConfirmDialog } from "./components/confirmDialog";
@@ -18,7 +19,10 @@ export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
   const [trackMatch, setTrackMatch] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
   const dispatch = useDispatch();
+  const expiresIn = localStorage.getItem("expiresIn");
+  const refreshToken = localStorage.getItem("refreshToken");
 
   const handleDragEnd = (event) => {
     const { over } = event;
@@ -56,17 +60,25 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    // Send the request only when the previous access token has expired
-    const currentTime = Math.floor(Date.now() / 1000);
-    const expirationTime = localStorage.getItem("spotifyTokenExpirationTime");
+    const accessToken = localStorage.getItem("spotifyAccessToken");
+    if (accessToken) {
+      setHasToken(true);
+    }
+  }, [hasToken]);
 
-    if (
-      !localStorage.getItem("spotifyAccessToken") ||
-      !expirationTime ||
-      currentTime >= expirationTime
-    ) {
-      // Send a request to the server to get the access token
-      fetch("http://localhost:3001/auth/getToken")
+  const refreshAccessToken = async () => {
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (refreshToken) {
+      const body = {
+        refreshToken,
+      };
+
+      fetch("http://localhost:3001/auth/refreshToken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
         .then((response) => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -74,17 +86,27 @@ export default function App() {
           return response.json();
         })
         .then((data) => {
-          // Save the access token to localStorage
           localStorage.setItem("spotifyAccessToken", data.accessToken);
-          localStorage.setItem(
-            "spotifyTokenExpirationTime",
-            currentTime + data.expiresIn
-          );
+          localStorage.setItem("expiresIn", data.expiresIn);
         })
         .catch((error) => console.error(error));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
+
+  useEffect(() => {
+    if (!refreshToken || !expiresIn) return;
+    if (expiresIn) {
+      const timeout = setInterval(() => {
+        refreshAccessToken();
+      }, (expiresIn - 60) * 1000); // Refresh the token 1 minute before it expires
+
+      return () => clearTimeout(timeout);
+    }
+  }, [refreshToken, expiresIn]);
+
+  if (!hasToken) {
+    return <Login />;
+  }
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -105,6 +127,7 @@ export default function App() {
               <div className="col-span-3 lg:col-span-4 lg:border-l">
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
                   <Route path="/browse" element={<Browse />} />
                   <Route path="/library" element={<Library />} />
                   <Route path="/playlists/:playlistId" element={<Playlist />} />
