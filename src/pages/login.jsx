@@ -2,10 +2,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useEffect } from "react";
 
 export default function Login() {
-  const clientId = "bcbf898173824f97a8f4d4cfbd642f06";
   const redirectUri = "http://127.0.0.1:5173/";
 
   const generateRandomString = (length) => {
@@ -22,6 +20,7 @@ export default function Login() {
   async function loginToSpotify(event) {
     event.preventDefault();
 
+    const clientId = "bcbf898173824f97a8f4d4cfbd642f06";
     const state = generateRandomString(16);
 
     const params = new URLSearchParams({
@@ -33,41 +32,6 @@ export default function Login() {
 
     window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;
   }
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-    const state = params.get("state");
-
-    const body = {
-      grant_type: "authorization_code",
-      code,
-      redirect_uri: redirectUri,
-      state,
-    };
-
-    if (code) {
-      // Send a request to the server to get the access token
-      fetch("http://localhost:3001/auth/getToken", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          localStorage.setItem("spotifyAccessToken", data.accessToken);
-          localStorage.setItem("refreshToken", data.refreshToken);
-          localStorage.setItem("expiresIn", data.expiresIn);
-          window.location.href = "/";
-        })
-        .catch((error) => console.error(error));
-    }
-  });
 
   return (
     <div className="lg:p-8">

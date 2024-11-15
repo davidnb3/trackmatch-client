@@ -14,15 +14,14 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { addTrackMatchToPlaylist } from "./store/playlistsSlice";
 
 import "./App.css";
+import useAuth from "./hooks/useAuth.jsx";
 
 export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
   const [trackMatch, setTrackMatch] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  const [hasToken, setHasToken] = useState(false);
+  const { hasToken } = useAuth();
   const dispatch = useDispatch();
-  const expiresIn = localStorage.getItem("expiresIn");
-  const refreshToken = localStorage.getItem("refreshToken");
 
   const handleDragEnd = (event) => {
     const { over } = event;
@@ -58,51 +57,6 @@ export default function App() {
     dispatch(fetchTrackMatches({ page: 1 }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const accessToken = localStorage.getItem("spotifyAccessToken");
-    if (accessToken) {
-      setHasToken(true);
-    }
-  }, [hasToken]);
-
-  const refreshAccessToken = async () => {
-    const refreshToken = localStorage.getItem("refreshToken");
-
-    if (refreshToken) {
-      const body = {
-        refreshToken,
-      };
-
-      fetch("http://localhost:3001/auth/refreshToken", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          localStorage.setItem("spotifyAccessToken", data.accessToken);
-          localStorage.setItem("expiresIn", data.expiresIn);
-        })
-        .catch((error) => console.error(error));
-    }
-  };
-
-  useEffect(() => {
-    if (!refreshToken || !expiresIn) return;
-    if (expiresIn) {
-      const timeout = setInterval(() => {
-        refreshAccessToken();
-      }, (expiresIn - 60) * 1000); // Refresh the token 1 minute before it expires
-
-      return () => clearTimeout(timeout);
-    }
-  }, [refreshToken, expiresIn]);
 
   if (!hasToken) {
     return <Login />;

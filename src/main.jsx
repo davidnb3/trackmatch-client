@@ -10,6 +10,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <script src="https://sdk.scdn.co/spotify-player.js"></script>
         <App />
       </ThemeProvider>
     </Provider>
