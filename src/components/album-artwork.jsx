@@ -11,8 +11,21 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import PropTypes from "prop-types";
 
 import { playlistsPlaceholder } from "../data/playlists";
+
+AlbumArtwork.propTypes = {
+  album: PropTypes.shape({
+    cover: PropTypes.string,
+    name: PropTypes.string,
+    artist: PropTypes.string,
+  }),
+  aspectRatio: PropTypes.oneOf(["portrait", "square"]),
+  width: PropTypes.number,
+  height: PropTypes.number,
+  className: PropTypes.string,
+};
 
 export function AlbumArtwork({
   album,
