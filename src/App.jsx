@@ -9,7 +9,7 @@ import { ConfirmDialog } from "./components/confirmDialog";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchTrackMatches } from "./store/trackMatchesSlice";
-import { DndContext } from "@dnd-kit/core";
+import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { addTrackMatchToPlaylist } from "./store/playlistsSlice";
 
@@ -58,12 +58,19 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const pointerSensor = useSensor(PointerSensor, {
+    // Require the mouse to move by 10 pixels before activating
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+
   if (!hasToken) {
     return <Login />;
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd} sensors={[pointerSensor]}>
       <Router>
         <Menu />
         <ConfirmDialog
