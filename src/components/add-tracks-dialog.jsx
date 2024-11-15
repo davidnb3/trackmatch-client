@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
 import { tracksSlice } from "@/store/tracksSlice";
 import disc from "@/assets/disc.svg";
+import useAuth from "@/hooks/useAuth";
 import {
   createTrackMatch,
   updateExistingTrackMatch,
@@ -40,6 +41,7 @@ export function AddTracks({ children, trackMatch }) {
   // eslint-disable-next-line no-unused-vars
   const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     setTracks(trackMatch?.tracks || pendingTracks);
@@ -71,6 +73,7 @@ export function AddTracks({ children, trackMatch }) {
         artistSpotifyId: "",
         key: "",
         cover: disc,
+        uri: "",
       },
     ]);
   };
@@ -83,6 +86,7 @@ export function AddTracks({ children, trackMatch }) {
         artistSpotifyId: "",
         key: "",
         cover: disc,
+        uri: "",
       },
       {
         name: "",
@@ -90,6 +94,7 @@ export function AddTracks({ children, trackMatch }) {
         artistSpotifyId: "",
         key: "",
         cover: disc,
+        uri: "",
       },
     ]);
   };
@@ -136,7 +141,6 @@ export function AddTracks({ children, trackMatch }) {
   const debouncedSearch = useCallback(
     debounce((searchQuery) => {
       if (searchQuery && searchQuery.trim() !== "") {
-        const accessToken = localStorage.getItem("spotifyAccessToken");
         fetch(
           `https://api.spotify.com/v1/search?query=${encodeURIComponent(
             searchQuery
@@ -164,6 +168,7 @@ export function AddTracks({ children, trackMatch }) {
                 cover: selectedImage
                   ? selectedImage.url
                   : item.album.images[0].url,
+                uri: item.uri,
               };
             });
             setSearchResults(searchResults);
@@ -190,6 +195,7 @@ export function AddTracks({ children, trackMatch }) {
           artistSpotifyId: result.artistSpotifyId,
           key: key,
           cover: result.cover,
+          uri: result.uri,
         };
       }
 
@@ -204,7 +210,6 @@ export function AddTracks({ children, trackMatch }) {
 
   const getTrackKey = (selectedTrack) => {
     return new Promise((resolve, reject) => {
-      const accessToken = localStorage.getItem("spotifyAccessToken");
       fetch(
         `https://api.spotify.com/v1/audio-features/${selectedTrack.trackId}`,
         {
