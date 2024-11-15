@@ -28,6 +28,8 @@ export default function Login() {
       response_type: "code",
       redirect_uri: redirectUri,
       state: state,
+      scope:
+        "user-read-private user-read-email playlist-read-private streaming user-read-playback-state user-modify-playback-state user-library-read user-library-modify",
     });
 
     window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;

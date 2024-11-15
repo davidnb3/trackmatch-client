@@ -2,6 +2,7 @@ import {
   Pencil1Icon,
   TrashIcon,
   MinusCircledIcon,
+  PlayIcon,
 } from "@radix-ui/react-icons";
 import {
   ContextMenu,
@@ -13,6 +14,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+
 import {
   createPlaylist,
   addTrackMatchToPlaylist,
@@ -27,6 +29,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { useParams } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import useSpotifyPlayer from "@/hooks/useSpotifyPlayer";
 
 TrackMatch.propTypes = {
   trackMatch: PropTypes.shape({
@@ -42,6 +46,8 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
   const { playlistId } = useParams();
   const dispatch = useDispatch();
   const playlists = useSelector((state) => state.playlists.entities);
+  const { accessToken } = useAuth();
+  const { play } = useSpotifyPlayer(accessToken);
 
   const handleCreateNewPlaylist = (event) => {
     event.preventDefault();
@@ -61,6 +67,13 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
         instanceId,
       })
     );
+  };
+
+  const handleOnPlay = (e, uri) => {
+    e.stopPropagation();
+    e.preventDefault();
+    play(uri);
+    console.log("Play track", uri);
   };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -86,23 +99,78 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-          {view === "card" && (
-            <Card className="inline-flex justify-center shadow-md p-4 space-x-4">
+        {view === "card" && (
+          <Card
+            className="inline-flex justify-center shadow-md p-4 space-x-4 cursor-move"
+            ref={setNodeRef}
+            style={style}
+            {...listeners}
+            {...attributes}
+          >
+            {trackMatch?.tracks?.map((track, index) => (
+              <CardContent key={index} className="space-y-3 p-0">
+                <div className="overflow-hidden rounded-md w-[100px] relative group">
+                  <img
+                    src={track.cover}
+                    alt={track.name}
+                    className={cn(
+                      "hover:scale-105",
+                      "aspect-square",
+                      "h-24 w-24"
+                    )}
+                  />
+                  <button
+                    className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-10"
+                    onClick={(event) => handleOnPlay(event, track.uri)}
+                    style={{ zIndex: 10 }}
+                  >
+                    <PlayIcon className="w-10 h-10 text-white" />
+                  </button>
+                </div>
+                <div className="space-y-1 text-sm w-[100px]">
+                  <h3 className="font-medium leading-none overflow-hidden text-ellipsis text-nowrap">
+                    {track.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
+                    {track.artist}
+                  </p>
+                  <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
+                    {track.key}
+                  </p>
+                </div>
+              </CardContent>
+            ))}
+          </Card>
+        )}
+        {view === "list" && (
+          <div style={{ breakInside: "avoid", marginBottom: "1rem" }}>
+            <Card
+              className="flex flex-col w-64 shadow-md cursor-move"
+              ref={setNodeRef}
+              style={style}
+              {...listeners}
+              {...attributes}
+            >
               {trackMatch?.tracks?.map((track, index) => (
-                <CardContent key={index} className="space-y-3 p-0">
-                  <div className="overflow-hidden rounded-md w-[100px]">
+                <div
+                  key={index}
+                  className="flex items-center space-x-3 relative group"
+                >
+                  <div className="overflow-hidden rounded-md w-16 h-16 relative group">
                     <img
                       src={track.cover}
                       alt={track.name}
-                      className={cn(
-                        "hover:scale-105",
-                        "aspect-square",
-                        "h-24 w-24"
-                      )}
+                      className="w-16 h-16 flex-shrink-0"
                     />
+                    <button
+                      className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-10"
+                      onClick={handleOnPlay}
+                      style={{ zIndex: 10 }}
+                    >
+                      <PlayIcon className="w-10 h-10 text-white" />
+                    </button>
                   </div>
-                  <div className="space-y-1 text-sm w-[100px]">
+                  <div className="overflow-hidden">
                     <h3 className="font-medium leading-none overflow-hidden text-ellipsis text-nowrap">
                       {track.name}
                     </h3>
@@ -113,37 +181,11 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
                       {track.key}
                     </p>
                   </div>
-                </CardContent>
+                </div>
               ))}
             </Card>
-          )}
-          {view === "list" && (
-            <div style={{ breakInside: "avoid", marginBottom: "1rem" }}>
-              <Card className="flex flex-col w-64 shadow-md">
-                {trackMatch?.tracks?.map((track, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <img
-                      src={track.cover}
-                      alt={track.name}
-                      className="w-16 h-16 flex-shrink-0"
-                    />
-                    <div className="overflow-hidden">
-                      <h3 className="font-medium leading-none overflow-hidden text-ellipsis text-nowrap">
-                        {track.name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
-                        {track.artist}
-                      </p>
-                      <p className="text-xs text-muted-foreground overflow-hidden text-ellipsis text-nowrap">
-                        {track.key}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </Card>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </ContextMenuTrigger>
       <ContextMenuContent className="w-40">
         <ContextMenuSub>

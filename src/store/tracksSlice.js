@@ -46,6 +46,7 @@ export const tracksSlice = createSlice({
         artistSpotifyId: "",
         key: "",
         cover: disc,
+        uri: "",
       },
       {
         name: "",
@@ -53,6 +54,7 @@ export const tracksSlice = createSlice({
         artistSpotifyId: "",
         key: "",
         cover: disc,
+        uri: "",
       },
     ],
   },
@@ -73,6 +75,7 @@ export const tracksSlice = createSlice({
           artistSpotifyId: "",
           key: "",
           cover: disc,
+          uri: "",
         },
         {
           name: "",
@@ -80,6 +83,7 @@ export const tracksSlice = createSlice({
           artistSpotifyId: "",
           key: "",
           cover: disc,
+          uri: "",
         },
       ];
     },
