@@ -13,6 +13,7 @@ import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { addTrackMatchToPlaylist } from "./store/playlistsSlice";
 import { SpotifyPlayerProvider } from "@/contexts/useSpotifyPlayer.jsx";
+import Player from "./components/spotifyPlayer.jsx";
 import useAuth from "./hooks/useAuth.jsx";
 
 import "./App.css";
@@ -102,6 +103,7 @@ export default function App() {
               </div>
             </div>
           </div>
+          <Player />
         </Router>
       </DndContext>
     </SpotifyPlayerProvider>

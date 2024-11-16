@@ -14,6 +14,9 @@ export const SpotifyPlayerProvider = ({ accessToken, children }) => {
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(0.5);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -48,6 +51,8 @@ export const SpotifyPlayerProvider = ({ accessToken, children }) => {
         if (state) {
           setCurrentTrack(state.track_window.current_track);
           setIsPlaying(!state.paused);
+          setPosition(state.position);
+          setDuration(state.duration);
         }
       });
 
@@ -104,6 +109,15 @@ export const SpotifyPlayerProvider = ({ accessToken, children }) => {
     player.previousTrack();
   };
 
+  const seek = (position) => {
+    player.seek(position);
+  };
+
+  const setPlayerVolume = (volume) => {
+    player.setVolume(volume);
+    setVolume(volume);
+  };
+
   return (
     <SpotifyPlayerContext.Provider
       value={{
@@ -112,11 +126,16 @@ export const SpotifyPlayerProvider = ({ accessToken, children }) => {
         isReady,
         isPlaying,
         currentTrack,
+        position,
+        duration,
+        volume,
         play,
         pause,
         resume,
         nextTrack,
         previousTrack,
+        seek,
+        setPlayerVolume,
       }}
     >
       {children}
