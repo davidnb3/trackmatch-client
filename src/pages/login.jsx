@@ -6,28 +6,28 @@ import { Label } from "@/components/ui/label";
 export default function Login() {
   const redirectUri = "http://127.0.0.1:5173/";
 
-  const generateRandomString = (length) => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  };
+  // const generateRandomString = (length) => {
+  //   const characters =
+  //     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  //   let result = "";
+  //   const charactersLength = characters.length;
+  //   for (let i = 0; i < length; i++) {
+  //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  //   }
+  //   return result;
+  // };
 
   async function loginToSpotify(event) {
     event.preventDefault();
 
     const clientId = "bcbf898173824f97a8f4d4cfbd642f06";
-    const state = generateRandomString(16);
+    // const state = generateRandomString(16);
 
     const params = new URLSearchParams({
       client_id: clientId,
       response_type: "code",
       redirect_uri: redirectUri,
-      state: state,
+
       scope:
         "user-read-private user-read-email playlist-read-private streaming user-read-playback-state user-modify-playback-state user-library-read user-library-modify",
     });

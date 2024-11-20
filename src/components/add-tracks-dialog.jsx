@@ -41,7 +41,7 @@ export function AddTracks({ children, trackMatch }) {
   // eslint-disable-next-line no-unused-vars
   const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { accessToken } = useAuth();
+  const { accessToken, refreshAccessToken, userData } = useAuth();
 
   useEffect(() => {
     setTracks(trackMatch?.tracks || pendingTracks);
@@ -74,6 +74,7 @@ export function AddTracks({ children, trackMatch }) {
         key: "",
         cover: disc,
         uri: "",
+        user: userData._id,
       },
     ]);
   };
@@ -87,6 +88,7 @@ export function AddTracks({ children, trackMatch }) {
         key: "",
         cover: disc,
         uri: "",
+        user: userData._id,
       },
       {
         name: "",
@@ -95,6 +97,7 @@ export function AddTracks({ children, trackMatch }) {
         key: "",
         cover: disc,
         uri: "",
+        user: userData._id,
       },
     ]);
   };
@@ -139,46 +142,68 @@ export function AddTracks({ children, trackMatch }) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
-    debounce((searchQuery) => {
+    debounce(async (searchQuery) => {
       if (searchQuery && searchQuery.trim() !== "") {
-        fetch(
-          `https://api.spotify.com/v1/search?query=${encodeURIComponent(
-            searchQuery
-          )}&type=track&limit=20`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            const searchResults = data.tracks.items.map((item) => {
-              // Try to find the image with a height of 300
-              let selectedImage = item.album.images.find(
-                (image) => image.height === 300
-              );
+        try {
+          let response = await fetch(
+            `https://api.spotify.com/v1/search?query=${encodeURIComponent(
+              searchQuery
+            )}&type=track&limit=20`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
 
-              return {
-                trackId: item.id,
-                name: item.name,
-                artist: item.artists[0].name,
-                artistSpotifyId: item.artists[0].id,
-                // If there's no image with a height of 300, just take the first one in the array
-                cover: selectedImage
-                  ? selectedImage.url
-                  : item.album.images[0].url,
-                uri: item.uri,
-              };
-            });
-            setSearchResults(searchResults);
-          })
-          .catch((error) => console.error(error));
+          if (response.status === 401) {
+            // Token expired, refresh it
+            const newAccessToken = await refreshAccessToken();
+            if (newAccessToken) {
+              // Retry the original request with the new token
+              response = await fetch(
+                `https://api.spotify.com/v1/search?query=${encodeURIComponent(
+                  searchQuery
+                )}&type=track&limit=20`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${newAccessToken}`,
+                  },
+                }
+              );
+            }
+          }
+
+          const data = await response.json();
+          const searchResults = data.tracks.items.map((item) => {
+            // Try to find the image with a height of 300
+            let selectedImage = item.album.images.find(
+              (image) => image.height === 300
+            );
+
+            return {
+              trackId: item.id,
+              name: item.name,
+              artist: item.artists[0].name,
+              artistSpotifyId: item.artists[0].id,
+              // If there's no image with a height of 300, just take the first one in the array
+              cover: selectedImage
+                ? selectedImage.url
+                : item.album.images[0].url,
+              uri: item.uri,
+              user: userData._id,
+            };
+          });
+
+          setSearchResults(searchResults);
+        } catch (error) {
+          console.error(error);
+        }
       } else {
         setSearchResults([]);
       }
     }, 500),
-    [] // dependencies
+    [userData, accessToken, refreshAccessToken]
   );
 
   const handleSelectResult = async (index, result) => {
@@ -196,6 +221,7 @@ export function AddTracks({ children, trackMatch }) {
           key: key,
           cover: result.cover,
           uri: result.uri,
+          user: userData._id,
         };
       }
 
@@ -208,36 +234,50 @@ export function AddTracks({ children, trackMatch }) {
     setSearchResults([]);
   };
 
-  const getTrackKey = (selectedTrack) => {
-    return new Promise((resolve, reject) => {
-      fetch(
+  const getTrackKey = async (selectedTrack) => {
+    try {
+      let response = await fetch(
         `https://api.spotify.com/v1/audio-features/${selectedTrack.trackId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          // Mode represents either major (1) or minor (0)
-          let mode = data.mode;
-          let camelotKey;
-          if (mode === 0) {
-            camelotKey = camelotNotationMinor[data.key];
-          } else if (mode === 1) {
-            camelotKey = camelotNotationMajor[data.key];
-          } else {
-            console.error("Invalid mode:", mode);
-          }
+      );
 
-          resolve(camelotKey);
-        })
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
+      if (response.status === 401) {
+        // Token expired, refresh it
+        const newAccessToken = await refreshAccessToken();
+        if (newAccessToken) {
+          // Retry the original request with the new token
+          response = await fetch(
+            `https://api.spotify.com/v1/audio-features/${selectedTrack.trackId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+        }
+      }
+
+      const data = await response.json();
+      // Mode represents either major (1) or minor (0)
+      let mode = data.mode;
+      let camelotKey;
+      if (mode === 0) {
+        camelotKey = camelotNotationMinor[data.key];
+      } else if (mode === 1) {
+        camelotKey = camelotNotationMajor[data.key];
+      } else {
+        console.error("Invalid mode:", mode);
+      }
+
+      return camelotKey;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   };
 
   const submitTrackMatch = (tracks) => {
@@ -253,10 +293,8 @@ export function AddTracks({ children, trackMatch }) {
     const cleanedTracks = tracks.map(({ _id, __v, ...rest }) => rest);
 
     if (trackMatch) {
-      console.log("updateExistingTrackMatch", { id: trackMatch._id, tracks });
       dispatch(updateExistingTrackMatch({ id: trackMatch._id, tracks }));
     } else {
-      console.log("createTrackMatch", tracks);
       dispatch(createTrackMatch(cleanedTracks));
       resetTracks();
     }

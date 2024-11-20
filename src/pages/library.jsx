@@ -16,6 +16,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import useAuth from "../hooks/useAuth";
 
 export default function Library() {
   const tracks = useSelector((state) => state.tracks.entities);
@@ -23,6 +24,7 @@ export default function Library() {
   const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [artists, setArtists] = useState([]);
+  const { refreshAccessToken } = useAuth();
 
   const dispatch = useDispatch();
 
@@ -42,17 +44,40 @@ export default function Library() {
     const uniqueArtists = Array.from(artistMap.values());
 
     const fetchArtistImage = async (artist) => {
-      const accessToken = localStorage.getItem("spotifyAccessToken");
-      const response = await fetch(
-        `https://api.spotify.com/v1/artists/${artist.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+      let accessToken = localStorage.getItem("spotifyAccessToken");
+
+      try {
+        let response = await fetch(
+          `https://api.spotify.com/v1/artists/${artist.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (response.status === 401) {
+          // Token expired, refresh it
+          accessToken = await refreshAccessToken();
+          if (accessToken) {
+            // Retry the original request with the new token
+            response = await fetch(
+              `https://api.spotify.com/v1/artists/${artist.id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
+          }
         }
-      );
-      const data = await response.json();
-      return { ...artist, image: data.images[0]?.url };
+
+        const data = await response.json();
+        return { ...artist, image: data.images[0]?.url };
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
     };
 
     Promise.all(uniqueArtists.map(fetchArtistImage)).then(setArtists);

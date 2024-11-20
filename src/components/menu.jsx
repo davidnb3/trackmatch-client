@@ -8,24 +8,12 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { getUserData } from "@/store/userSlice.js";
-import { useDispatch, useSelector } from "react-redux";
 
+import { useSelector } from "react-redux";
 import { ModeToggle } from "./mode-toggle.jsx";
-import { useEffect } from "react";
-import useAuth from "@/hooks/useAuth";
 
 export function Menu() {
-  const dispatch = useDispatch();
-  const { accessToken } = useAuth();
   const user = useSelector((state) => state.user.user);
-
-  useEffect(() => {
-    if (accessToken) {
-      dispatch(getUserData(accessToken));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
 
   return (
     <Menubar className="rounded-none border-b border-none px-2 lg:px-4">

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import useAuth from "@/hooks/useAuth";
 
 const SpotifyPlayerContext = createContext();
 
@@ -17,6 +18,7 @@ export const SpotifyPlayerProvider = ({ accessToken, children }) => {
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.5);
+  const { refreshAccessToken } = useAuth();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -82,15 +84,45 @@ export const SpotifyPlayerProvider = ({ accessToken, children }) => {
     };
   }, [accessToken]);
 
-  const play = (spotifyUri) => {
-    fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
-      method: "PUT",
-      body: JSON.stringify({ uris: [spotifyUri] }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const play = async (spotifyUri) => {
+    try {
+      let response = await fetch(
+        `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ uris: [spotifyUri] }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 401) {
+        // Token expired, refresh it
+        const newAccessToken = await refreshAccessToken();
+        if (newAccessToken) {
+          // Retry the original request with the new token
+          response = await fetch(
+            `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
+            {
+              method: "PUT",
+              body: JSON.stringify({ uris: [spotifyUri] }),
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${newAccessToken}`,
+              },
+            }
+          );
+        }
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const pause = () => {

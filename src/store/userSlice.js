@@ -4,10 +4,15 @@ export const getUserData = createAsyncThunk(
   "user/getUserData",
   async (accessToken) => {
     const response = await fetch("http://localhost:3001/auth/user", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+      body: JSON.stringify({ accessToken }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
     });
+
+    if (response.status === 401) {
+      throw new Error("Unauthorized");
+    }
+
     if (!response.ok) {
       throw new Error("Failed to fetch user");
     }
