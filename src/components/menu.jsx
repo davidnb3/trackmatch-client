@@ -15,6 +15,11 @@ import { ModeToggle } from "./mode-toggle.jsx";
 export function Menu() {
   const user = useSelector((state) => state.user.user);
 
+  const logout = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
   return (
     <Menubar className="rounded-none border-b border-none px-2 lg:px-4">
       <MenubarMenu>
@@ -41,13 +46,11 @@ export function Menu() {
       <MenubarMenu>
         <MenubarTrigger className="hidden md:block">Account</MenubarTrigger>
         <MenubarContent forceMount>
-          <MenubarLabel inset>Spotify Account</MenubarLabel>
+          <MenubarLabel>{user.user?.name}</MenubarLabel>
           <MenubarSeparator />
-          <MenubarItem inset>{user.name}</MenubarItem>
+          <MenubarLabel>{user.user?.email}</MenubarLabel>
           <MenubarSeparator />
-          <MenubarItem inset>{user.email}</MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem inset>Logout from Spotify</MenubarItem>
+          <MenubarItem onClick={logout}>Logout from Spotify</MenubarItem>
         </MenubarContent>
       </MenubarMenu>
       <ModeToggle />
