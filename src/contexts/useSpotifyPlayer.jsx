@@ -39,7 +39,6 @@ export const SpotifyPlayerProvider = ({ accessToken, children }) => {
       setPlayer(player);
 
       player.addListener("ready", ({ device_id }) => {
-        console.log("Ready with Device ID", device_id);
         setDeviceId(device_id);
         setIsReady(true);
       });

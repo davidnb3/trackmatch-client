@@ -22,7 +22,7 @@ export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
   const [trackMatch, setTrackMatch] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  const { hasToken, accessToken } = useAuth();
+  const { hasAccessToken, accessToken } = useAuth();
   const dispatch = useDispatch();
 
   const handleDragEnd = (event) => {
@@ -67,7 +67,7 @@ export default function App() {
     },
   });
 
-  if (!hasToken) {
+  if (!hasAccessToken) {
     return <Login />;
   }
 
