@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPlaylists, createPlaylist } from "../store/playlistsSlice";
 import PropTypes from "prop-types";
+import useAuth from "@/hooks/useAuth";
 
 Sidebar.propTypes = {
   className: PropTypes.string,
@@ -18,13 +19,14 @@ export function Sidebar({ className }) {
   const playlists = useSelector((state) => state.playlists.entities);
   const isLoading = useSelector((state) => state.playlists.playlistsLoading);
   const location = useLocation();
+  const { jwtToken } = useAuth();
 
   const handleCreateNewPlaylist = () => {
-    dispatch(createPlaylist());
+    dispatch(createPlaylist(jwtToken));
   };
 
   useEffect(() => {
-    dispatch(fetchPlaylists());
+    dispatch(fetchPlaylists(jwtToken));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

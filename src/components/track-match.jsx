@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { useParams } from "react-router-dom";
 import { useSpotifyPlayer } from "@/contexts/useSpotifyPlayer";
+import useAuth from "@/hooks/useAuth";
 
 TrackMatch.propTypes = {
   trackMatch: PropTypes.shape({
@@ -46,15 +47,20 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
   const dispatch = useDispatch();
   const playlists = useSelector((state) => state.playlists.entities);
   const { play } = useSpotifyPlayer();
+  const { jwtToken } = useAuth();
 
   const handleCreateNewPlaylist = (event) => {
     event.preventDefault();
-    dispatch(createPlaylist());
+    dispatch(createPlaylist(jwtToken));
   };
 
   const handleAddToPlaylist = (playlistId) => {
     dispatch(
-      addTrackMatchToPlaylist({ playlistId, trackMatch: trackMatch._id })
+      addTrackMatchToPlaylist({
+        playlistId,
+        trackMatch: trackMatch._id,
+        jwtToken,
+      })
     );
   };
 
@@ -63,6 +69,7 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
       removeTrackMatchFromPlaylist({
         playlistId,
         instanceId,
+        jwtToken,
       })
     );
   };

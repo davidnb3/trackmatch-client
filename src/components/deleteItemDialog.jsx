@@ -15,6 +15,7 @@ import { deleteTrackMatch } from "../store/trackMatchesSlice";
 import { deletePlaylist } from "../store/playlistsSlice";
 import { deleteTrackByName } from "../store/tracksSlice";
 import { Button } from "@/components/ui/button";
+import useAuth from "@/hooks/useAuth";
 
 DeleteItemDialog.propTypes = {
   item: PropTypes.shape({
@@ -29,6 +30,7 @@ export function DeleteItemDialog({ item, apiPath, children }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { jwtToken } = useAuth();
 
   const openDialog = (event) => {
     event.preventDefault();
@@ -40,15 +42,15 @@ export function DeleteItemDialog({ item, apiPath, children }) {
 
   const deleteItem = async () => {
     if (apiPath === "trackmatches") {
-      dispatch(deleteTrackMatch(item._id));
+      dispatch(deleteTrackMatch({ id: item._id, jwtToken }));
     }
 
     if (apiPath === "playlists") {
-      dispatch(deletePlaylist(item._id));
+      dispatch(deletePlaylist({ id: item._id, jwtToken }));
     }
 
     if (apiPath === "tracks") {
-      dispatch(deleteTrackByName(item.name));
+      dispatch(deleteTrackByName({ name: item.name, jwtToken }));
     }
 
     closeDialog();

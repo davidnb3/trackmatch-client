@@ -10,15 +10,17 @@ import { AddTracks } from "../components/add-tracks-dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPlaylistById } from "../store/playlistsSlice";
 import { Input } from "@/components/ui/input";
+import useAuth from "@/hooks/useAuth";
 
 export default function Playlist() {
   const { playlistId } = useParams();
   const dispatch = useDispatch();
   const playlist = useSelector((state) => state.playlists.selectedPlaylist);
   const isLoading = useSelector((state) => state.playlists.trackMatchesLoading);
+  const { jwtToken } = useAuth();
 
   useEffect(() => {
-    dispatch(fetchPlaylistById(playlistId));
+    dispatch(fetchPlaylistById({ playlistId, jwtToken }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playlistId]);
 

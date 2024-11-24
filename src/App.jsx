@@ -22,7 +22,7 @@ export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
   const [trackMatch, setTrackMatch] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  const { hasAccessToken, accessToken } = useAuth();
+  const { hasAccessToken, accessToken, jwtToken } = useAuth();
   const dispatch = useDispatch();
 
   const handleDragEnd = (event) => {
@@ -33,7 +33,12 @@ export default function App() {
       const trackMatch = event.active.data.current.trackMatch;
 
       dispatch(
-        addTrackMatchToPlaylist({ playlistId, trackMatch, confirmed: false })
+        addTrackMatchToPlaylist({
+          playlistId,
+          trackMatch,
+          confirmed: false,
+          jwtToken,
+        })
       )
         .then((action) => {
           if (action.payload === "TrackMatch already in playlist") {
@@ -50,15 +55,20 @@ export default function App() {
 
   const handleAddToPlaylist = () => {
     dispatch(
-      addTrackMatchToPlaylist({ playlistId, trackMatch, confirmed: true })
+      addTrackMatchToPlaylist({
+        playlistId,
+        trackMatch,
+        confirmed: true,
+        jwtToken,
+      })
     );
     setShowDialog(false);
   };
 
   useEffect(() => {
-    dispatch(fetchTrackMatches({ page: 1 }));
+    dispatch(fetchTrackMatches({ page: 1, jwtToken }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [accessToken]);
 
   const pointerSensor = useSensor(PointerSensor, {
     // Require the mouse to move by 10 pixels before activating

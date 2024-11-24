@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDispatch } from "react-redux";
 import { updatePlaylist } from "../store/playlistsSlice";
+import useAuth from "@/hooks/useAuth";
 
 EditPlaylistDialog.propTypes = {
   playlist: PropTypes.object.isRequired,
@@ -25,6 +26,7 @@ export function EditPlaylistDialog({ playlist, children }) {
   const [name, setName] = useState(playlist.name);
   const [description, setDescription] = useState(playlist.description || "");
   const closeDialog = () => setIsOpen(false);
+  const { jwtToken } = useAuth();
 
   const openDialog = (event) => {
     event.preventDefault();
@@ -33,7 +35,7 @@ export function EditPlaylistDialog({ playlist, children }) {
   };
 
   const updatePlaylistHandler = () => {
-    dispatch(updatePlaylist({ id: playlist._id, name, description }));
+    dispatch(updatePlaylist({ id: playlist._id, name, description, jwtToken }));
     closeDialog();
   };
 

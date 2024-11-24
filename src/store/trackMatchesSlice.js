@@ -2,10 +2,15 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const fetchTrackMatches = createAsyncThunk(
   "trackMatches/fetchTrackMatches",
-  async ({ page = 1, limit = 50 }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 50, jwtToken }) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/trackmatches?page=${page}&limit=${limit}`
+        `http://localhost:3001/trackmatches?page=${page}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -13,21 +18,22 @@ export const fetchTrackMatches = createAsyncThunk(
       const data = await response.json();
       return { trackMatches: data.trackMatches, totalPages: data.totalPages };
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw new Error(error.message);
     }
   }
 );
 
 export const createTrackMatch = createAsyncThunk(
   "trackMatches/createTrackMatch",
-  async (tracks, { rejectWithValue }) => {
+  async ({ cleanedTracks, jwtToken }) => {
     try {
       const response = await fetch("http://localhost:3001/trackmatches", {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${jwtToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ tracks }),
+        body: JSON.stringify({ cleanedTracks }),
       });
 
       if (!response.ok) {
@@ -37,18 +43,19 @@ export const createTrackMatch = createAsyncThunk(
       const data = await response.json();
       return data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw new Error(error.message);
     }
   }
 );
 
 export const updateExistingTrackMatch = createAsyncThunk(
   "trackMatches/updateExistingTrackMatch",
-  async ({ id, tracks }, { rejectWithValue }) => {
+  async ({ id, tracks, jwtToken }) => {
     try {
       const response = await fetch(`http://localhost:3001/trackmatches/${id}`, {
         method: "PUT",
         headers: {
+          Authorization: `Bearer ${jwtToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ tracks }),
@@ -61,26 +68,26 @@ export const updateExistingTrackMatch = createAsyncThunk(
       const data = await response.json();
       return data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      throw new Error(error.message);
     }
   }
 );
 
 export const deleteTrackMatch = createAsyncThunk(
   "trackMatches/deleteTrackMatch",
-  async (trackMatchId) => {
-    const response = await fetch(
-      `http://localhost:3001/trackmatches/${trackMatchId}`,
-      {
-        method: "DELETE",
-      }
-    );
+  async ({ id, jwtToken }) => {
+    const response = await fetch(`http://localhost:3001/trackmatches/${id}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      method: "DELETE",
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return trackMatchId;
+    return id;
   }
 );
 

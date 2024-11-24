@@ -16,7 +16,6 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import useAuth from "../hooks/useAuth";
 
 export default function Library() {
   const tracks = useSelector((state) => state.tracks.entities);
@@ -24,7 +23,6 @@ export default function Library() {
   const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [artists, setArtists] = useState([]);
-  const { refreshAccessToken } = useAuth();
 
   const dispatch = useDispatch();
 

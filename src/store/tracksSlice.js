@@ -3,33 +3,40 @@ import disc from "../assets/disc.svg";
 
 export const fetchTracks = createAsyncThunk(
   "tracks/fetchTracks",
-  async (_, thunkAPI) => {
+  async (jwtToken) => {
     try {
-      const response = await fetch(`http://localhost:3001/tracks`);
+      const response = await fetch(`http://localhost:3001/tracks`, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
       return { data };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      throw new Error(error.message);
     }
   }
 );
 
 export const deleteTrackByName = createAsyncThunk(
   "tracks/deleteTrackByName",
-  async (name, thunkAPI) => {
+  async ({ name, jwtToken }) => {
     try {
       const response = await fetch(`http://localhost:3001/tracks/${name}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return { name };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      throw new Error(error.message);
     }
   }
 );

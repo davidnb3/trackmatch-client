@@ -41,7 +41,7 @@ export function AddTracks({ children, trackMatch }) {
   // eslint-disable-next-line no-unused-vars
   const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { accessToken, refreshAccessToken, userData } = useAuth();
+  const { accessToken, refreshAccessToken, jwtToken } = useAuth();
 
   useEffect(() => {
     setTracks(trackMatch?.tracks || pendingTracks);
@@ -74,7 +74,6 @@ export function AddTracks({ children, trackMatch }) {
         key: "",
         cover: disc,
         uri: "",
-        user: userData._id,
       },
     ]);
   };
@@ -88,7 +87,6 @@ export function AddTracks({ children, trackMatch }) {
         key: "",
         cover: disc,
         uri: "",
-        user: userData._id,
       },
       {
         name: "",
@@ -97,7 +95,6 @@ export function AddTracks({ children, trackMatch }) {
         key: "",
         cover: disc,
         uri: "",
-        user: userData._id,
       },
     ]);
   };
@@ -173,7 +170,6 @@ export function AddTracks({ children, trackMatch }) {
                 ? selectedImage.url
                 : item.album.images[0].url,
               uri: item.uri,
-              user: userData._id,
             };
           });
 
@@ -185,7 +181,7 @@ export function AddTracks({ children, trackMatch }) {
         setSearchResults([]);
       }
     }, 500),
-    [userData, accessToken, refreshAccessToken]
+    [accessToken, refreshAccessToken]
   );
 
   const handleSelectResult = async (index, result) => {
@@ -203,7 +199,6 @@ export function AddTracks({ children, trackMatch }) {
           key: key,
           cover: result.cover,
           uri: result.uri,
-          user: userData._id,
         };
       }
 
@@ -259,9 +254,11 @@ export function AddTracks({ children, trackMatch }) {
     const cleanedTracks = tracks.map(({ _id, __v, ...rest }) => rest);
 
     if (trackMatch) {
-      dispatch(updateExistingTrackMatch({ id: trackMatch._id, tracks }));
+      dispatch(
+        updateExistingTrackMatch({ id: trackMatch._id, tracks, jwtToken })
+      );
     } else {
-      dispatch(createTrackMatch(cleanedTracks));
+      dispatch(createTrackMatch({ cleanedTracks, jwtToken }));
       resetTracks();
     }
 

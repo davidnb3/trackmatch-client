@@ -6,8 +6,10 @@ import {
 
 export const fetchPlaylists = createAsyncThunk(
   "playlists/fetchPlaylists",
-  async () => {
-    const response = await fetch("http://localhost:3001/playlists");
+  async (jwtToken) => {
+    const response = await fetch("http://localhost:3001/playlists", {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    });
     if (!response.ok) {
       throw new Error("Failed to fetch playlists");
     }
@@ -18,8 +20,13 @@ export const fetchPlaylists = createAsyncThunk(
 
 export const fetchPlaylistById = createAsyncThunk(
   "playlists/fetchPlaylistById",
-  async (id) => {
-    const response = await fetch(`http://localhost:3001/playlists/${id}`);
+  async ({ playlistId, jwtToken }) => {
+    const response = await fetch(
+      `http://localhost:3001/playlists/${playlistId}`,
+      {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      }
+    );
     if (!response.ok) {
       throw new Error("Failed to fetch playlist");
     }
@@ -30,7 +37,7 @@ export const fetchPlaylistById = createAsyncThunk(
 
 export const createPlaylist = createAsyncThunk(
   "playlists/createPlaylist",
-  async () => {
+  async (jwtToken) => {
     const date = new Date();
     const formattedDate = `${date.getDate()}.${
       date.getMonth() + 1
@@ -39,6 +46,7 @@ export const createPlaylist = createAsyncThunk(
     const response = await fetch("http://localhost:3001/playlists", {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -60,10 +68,11 @@ export const createPlaylist = createAsyncThunk(
 
 export const updatePlaylist = createAsyncThunk(
   "playlists/updatePlaylist",
-  async ({ id, name, description }) => {
+  async ({ id, name, description, jwtToken }) => {
     const response = await fetch(`http://localhost:3001/playlists/${id}`, {
       method: "PUT",
       headers: {
+        Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -84,9 +93,12 @@ export const updatePlaylist = createAsyncThunk(
 
 export const deletePlaylist = createAsyncThunk(
   "playlists/deletePlaylist",
-  async (id) => {
+  async ({ id, jwtToken }) => {
     const response = await fetch(`http://localhost:3001/playlists/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
     });
 
     if (!response.ok) {
@@ -99,12 +111,13 @@ export const deletePlaylist = createAsyncThunk(
 
 export const addTrackMatchToPlaylist = createAsyncThunk(
   "playlists/addTrackMatchToPlaylist",
-  async ({ playlistId, trackMatch, confirmed }) => {
+  async ({ playlistId, trackMatch, confirmed, jwtToken }) => {
     const response = await fetch(
       `http://localhost:3001/playlists/${playlistId}`,
       {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${jwtToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ trackMatch, confirmed }),
@@ -123,12 +136,13 @@ export const addTrackMatchToPlaylist = createAsyncThunk(
 
 export const removeTrackMatchFromPlaylist = createAsyncThunk(
   "playlists/removeTrackMatchFromPlaylist",
-  async ({ playlistId, instanceId }) => {
+  async ({ playlistId, instanceId, jwtToken }) => {
     const response = await fetch(
       `http://localhost:3001/playlists/${playlistId}/trackMatches`,
       {
         method: "PUT",
         headers: {
+          Authorization: `Bearer ${jwtToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ instanceId }),

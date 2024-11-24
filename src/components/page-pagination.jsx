@@ -10,6 +10,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTrackMatches } from "../store/trackMatchesSlice";
 import { useState } from "react";
+import useAuth from "@/hooks/useAuth";
 
 export function PagePagination() {
   const dispatch = useDispatch();
@@ -18,11 +19,12 @@ export function PagePagination() {
     (state) => state.trackMatches.loading
   );
   const [page, setPage] = useState(1);
+  const { jwtToken } = useAuth();
 
   const handlePageChange = (p) => {
     if (p >= 1 && p <= totalPages) {
       setPage(p);
-      dispatch(fetchTrackMatches({ page: p }));
+      dispatch(fetchTrackMatches({ page: p, jwtToken }));
     }
   };
 
