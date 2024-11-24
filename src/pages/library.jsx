@@ -56,22 +56,6 @@ export default function Library() {
           }
         );
 
-        if (response.status === 401) {
-          // Token expired, refresh it
-          accessToken = await refreshAccessToken();
-          if (accessToken) {
-            // Retry the original request with the new token
-            response = await fetch(
-              `https://api.spotify.com/v1/artists/${artist.id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                },
-              }
-            );
-          }
-        }
-
         const data = await response.json();
         return { ...artist, image: data.images[0]?.url };
       } catch (error) {

@@ -156,24 +156,6 @@ export function AddTracks({ children, trackMatch }) {
             }
           );
 
-          if (response.status === 401) {
-            // Token expired, refresh it
-            const newAccessToken = await refreshAccessToken();
-            if (newAccessToken) {
-              // Retry the original request with the new token
-              response = await fetch(
-                `https://api.spotify.com/v1/search?query=${encodeURIComponent(
-                  searchQuery
-                )}&type=track&limit=20`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${newAccessToken}`,
-                  },
-                }
-              );
-            }
-          }
-
           const data = await response.json();
           const searchResults = data.tracks.items.map((item) => {
             // Try to find the image with a height of 300
@@ -244,22 +226,6 @@ export function AddTracks({ children, trackMatch }) {
           },
         }
       );
-
-      if (response.status === 401) {
-        // Token expired, refresh it
-        const newAccessToken = await refreshAccessToken();
-        if (newAccessToken) {
-          // Retry the original request with the new token
-          response = await fetch(
-            `https://api.spotify.com/v1/audio-features/${selectedTrack.trackId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${newAccessToken}`,
-              },
-            }
-          );
-        }
-      }
 
       const data = await response.json();
       // Mode represents either major (1) or minor (0)
