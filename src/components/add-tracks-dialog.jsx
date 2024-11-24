@@ -8,7 +8,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { useSelector } from "react-redux";
 import { useState, useCallback, useEffect } from "react";
 import { camelotNotationMajor, camelotNotationMinor } from "@/lib/utils";
 import PropTypes from "prop-types";
@@ -34,18 +33,17 @@ AddTracks.propTypes = {
 
 export function AddTracks({ children, trackMatch }) {
   const dispatch = useDispatch();
-  const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
   const [activeTrackIndex, setActiveTrackIndex] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
-  const [tracks, setTracks] = useState(trackMatch?.tracks || pendingTracks);
+  const [tracks, setTracks] = useState(trackMatch?.tracks);
   // eslint-disable-next-line no-unused-vars
   const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { accessToken, refreshAccessToken, jwtToken } = useAuth();
 
   useEffect(() => {
-    setTracks(trackMatch?.tracks || pendingTracks);
-  }, [pendingTracks, trackMatch]);
+    setTracks(trackMatch?.tracks);
+  }, [trackMatch]);
 
   const openDialog = (event) => {
     event.preventDefault();
@@ -270,20 +268,7 @@ export function AddTracks({ children, trackMatch }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild onClick={openDialog}>
-        <div className="relative">
-          {children}
-
-          {pendingTracks[0].name !== "" && (
-            <div
-              className="notification-badge absolute h-4 w-4 rounded-full bg-primary-500 animate-ping"
-              style={{
-                backgroundImage: `url(${
-                  pendingTracks[pendingTracks.length - 1].cover
-                })`,
-              }}
-            />
-          )}
-        </div>
+        {children}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

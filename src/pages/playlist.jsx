@@ -17,6 +17,7 @@ export default function Playlist() {
   const dispatch = useDispatch();
   const playlist = useSelector((state) => state.playlists.selectedPlaylist);
   const isLoading = useSelector((state) => state.playlists.trackMatchesLoading);
+  const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
   const { jwtToken } = useAuth();
 
   useEffect(() => {
@@ -37,10 +38,22 @@ export default function Playlist() {
           <Input type="text" placeholder="Search" />
           <div className="ml-auto">
             <AddTracks>
-              <Button>
-                <PlusCircledIcon className="mr-2 h-4 w-4" />
-                Add TrackMatch
-              </Button>
+              <div className="relative">
+                <Button>
+                  <PlusCircledIcon className="mr-2 h-4 w-4" />
+                  Add TrackMatch
+                </Button>
+                {pendingTracks[0].name !== "" && (
+                  <div
+                    className="notification-badge absolute h-4 w-4 rounded-full bg-primary-500 animate-ping"
+                    style={{
+                      backgroundImage: `url(${
+                        pendingTracks[pendingTracks.length - 1].cover
+                      })`,
+                    }}
+                  />
+                )}
+              </div>
             </AddTracks>
           </div>
         </div>

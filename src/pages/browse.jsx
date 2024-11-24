@@ -14,6 +14,7 @@ export default function Browse() {
   const trackMatchesLoading = useSelector(
     (state) => state.trackMatches.loading
   );
+  const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
 
   return (
     <div className="h-full px-4 py-6 lg:px-8">
@@ -28,10 +29,22 @@ export default function Browse() {
           <Input type="text" placeholder="Search" />
           <div className="ml-auto">
             <AddTracks>
-              <Button>
-                <PlusCircledIcon className="mr-2 h-4 w-4" />
-                Add TrackMatch
-              </Button>
+              <div className="relative">
+                <Button>
+                  <PlusCircledIcon className="mr-2 h-4 w-4" />
+                  Add TrackMatch
+                </Button>
+                {pendingTracks[0].name !== "" && (
+                  <div
+                    className="notification-badge absolute h-4 w-4 rounded-full bg-primary-500 animate-ping"
+                    style={{
+                      backgroundImage: `url(${
+                        pendingTracks[pendingTracks.length - 1].cover
+                      })`,
+                    }}
+                  />
+                )}
+              </div>
             </AddTracks>
           </div>
         </div>

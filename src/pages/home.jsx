@@ -7,8 +7,11 @@ import { AlbumArtwork } from "../components/album-artwork";
 import { PodcastEmptyPlaceholder } from "../components/podcast-empty-placeholder";
 import { listenNowAlbums, madeForYouAlbums } from "../data/albums";
 import { AddTracks } from "../components/add-tracks-dialog";
+import { useSelector } from "react-redux";
 
 export default function Home() {
+  const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
+
   return (
     <div className="h-full px-4 py-6 lg:px-8">
       <Tabs defaultValue="music" className="h-full space-y-6">
@@ -24,10 +27,22 @@ export default function Home() {
           </TabsList>
           <div className="ml-auto">
             <AddTracks>
-              <Button>
-                <PlusCircledIcon className="mr-2 h-4 w-4" />
-                Add TrackMatch
-              </Button>
+              <div className="relative">
+                <Button>
+                  <PlusCircledIcon className="mr-2 h-4 w-4" />
+                  Add TrackMatch
+                </Button>
+                {pendingTracks[0].name !== "" && (
+                  <div
+                    className="notification-badge absolute h-4 w-4 rounded-full bg-primary-500 animate-ping"
+                    style={{
+                      backgroundImage: `url(${
+                        pendingTracks[pendingTracks.length - 1].cover
+                      })`,
+                    }}
+                  />
+                )}
+              </div>
             </AddTracks>
           </div>
         </div>
