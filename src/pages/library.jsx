@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { DeleteItemDialog } from "../components/deleteItemDialog";
 import { tracksSlice } from "../store/tracksSlice";
+import useAuth from "@/hooks/useAuth";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -23,11 +24,12 @@ export default function Library() {
   const pendingTracks = useSelector((state) => state.tracks.pendingTracks);
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [artists, setArtists] = useState([]);
+  const { jwtToken } = useAuth();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchTracks());
+    dispatch(fetchTracks(jwtToken));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackMatches]);
 
