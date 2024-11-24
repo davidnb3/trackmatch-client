@@ -280,7 +280,7 @@ export function AddTracks({ children, trackMatch }) {
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {tracks.map((track, index) => (
+          {tracks?.map((track, index) => (
             <div key={index} className="relative">
               <div
                 key={index}
