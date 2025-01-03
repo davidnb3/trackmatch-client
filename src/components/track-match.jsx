@@ -29,7 +29,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { useParams } from "react-router-dom";
-import { useSpotifyPlayer } from "@/contexts/useSpotifyPlayer";
 import useAuth from "@/hooks/useAuth";
 
 TrackMatch.propTypes = {
@@ -46,7 +45,6 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
   const { playlistId } = useParams();
   const dispatch = useDispatch();
   const playlists = useSelector((state) => state.playlists.entities);
-  const { play } = useSpotifyPlayer();
   const { jwtToken } = useAuth();
 
   const handleCreateNewPlaylist = (event) => {
@@ -72,13 +70,6 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
         jwtToken,
       })
     );
-  };
-
-  const handleOnPlay = (e, uri) => {
-    e.stopPropagation();
-    e.preventDefault();
-    play(uri);
-    console.log("Play track", uri);
   };
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -126,7 +117,9 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
                   />
                   <button
                     className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-10"
-                    onClick={(event) => handleOnPlay(event, track.uri)}
+                    onClick={() => {
+                      console.log("PLAY");
+                    }}
                     style={{ zIndex: 10 }}
                   >
                     <PlayIcon className="w-10 h-10 text-white" />
@@ -169,7 +162,6 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
                     />
                     <button
                       className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-10"
-                      onClick={handleOnPlay}
                       style={{ zIndex: 10 }}
                     >
                       <PlayIcon className="w-10 h-10 text-white" />
