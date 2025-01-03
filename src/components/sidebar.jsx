@@ -26,9 +26,11 @@ export function Sidebar({ className }) {
   };
 
   useEffect(() => {
+    if (!jwtToken) return;
+
     dispatch(fetchPlaylists(jwtToken));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [jwtToken]);
 
   return (
     <div className={cn("pb-12", className)}>

@@ -64,9 +64,11 @@ export default function App() {
   };
 
   useEffect(() => {
+    if (!jwtToken) return;
+
     dispatch(fetchTrackMatches({ page: 1, jwtToken }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
+  }, [jwtToken]);
 
   const pointerSensor = useSensor(PointerSensor, {
     // Require the mouse to move by 10 pixels before activating
