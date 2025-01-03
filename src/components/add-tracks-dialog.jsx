@@ -35,15 +35,30 @@ export function AddTracks({ children, trackMatch }) {
   const dispatch = useDispatch();
   const [activeTrackIndex, setActiveTrackIndex] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
-  const [tracks, setTracks] = useState(trackMatch?.tracks);
+  const [tracks, setTracks] = useState(
+    trackMatch?.tracks || [
+      {
+        name: "",
+        artist: "",
+        artistSpotifyId: "",
+        key: "",
+        cover: disc,
+        uri: "",
+      },
+      {
+        name: "",
+        artist: "",
+        artistSpotifyId: "",
+        key: "",
+        cover: disc,
+        uri: "",
+      },
+    ]
+  );
   // eslint-disable-next-line no-unused-vars
   const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { accessToken, refreshAccessToken, jwtToken } = useAuth();
-
-  useEffect(() => {
-    setTracks(trackMatch?.tracks);
-  }, [trackMatch]);
 
   const openDialog = (event) => {
     event.preventDefault();
