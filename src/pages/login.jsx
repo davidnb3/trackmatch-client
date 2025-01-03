@@ -6,17 +6,6 @@ import { Label } from "@/components/ui/label";
 export default function Login() {
   const redirectUri = "http://127.0.0.1:5173/";
 
-  // const generateRandomString = (length) => {
-  //   const characters =
-  //     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  //   let result = "";
-  //   const charactersLength = characters.length;
-  //   for (let i = 0; i < length; i++) {
-  //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  //   }
-  //   return result;
-  // };
-
   async function loginToSpotify(event) {
     event.preventDefault();
 
@@ -29,7 +18,7 @@ export default function Login() {
       redirect_uri: redirectUri,
 
       scope:
-        "user-read-private user-read-email playlist-read-private streaming user-read-playback-state user-modify-playback-state user-library-read user-library-modify",
+        "user-read-private user-read-email playlist-read-private streaming user-read-playback-state user-modify-playback-state user-library-read user-library-modify user-read-currently-playing app-remote-control playlist-modify-private playlist-read-collaborative playlist-modify-public user-follow-modify user-follow-read user-read-playback-position user-top-read user-read-recently-played",
     });
 
     window.location.href = `https://accounts.spotify.com/authorize?${params.toString()}`;

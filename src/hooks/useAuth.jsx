@@ -82,13 +82,14 @@ const useAuth = () => {
   }, [accessToken]);
 
   useEffect(() => {
+    if (hasAccessToken) return;
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
     if (code) {
       fetchSpotifyToken(code);
     }
-  }, []);
+  }, [hasAccessToken]);
 
   const refreshAccessToken = async () => {
     if (refreshToken) {

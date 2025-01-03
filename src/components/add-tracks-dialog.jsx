@@ -8,7 +8,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { camelotNotationMajor, camelotNotationMinor } from "@/lib/utils";
 import PropTypes from "prop-types";
 import { Button } from "@/components/ui/button";
