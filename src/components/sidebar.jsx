@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useEffect } from "react";
-import { PlaylistButton } from "./playlistButton";
+import { PlaylistButton } from "./PlaylistButton";
 import { Link, useLocation } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSelector, useDispatch } from "react-redux";

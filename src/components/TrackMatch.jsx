@@ -22,9 +22,9 @@ import {
 } from "../store/playlistsSlice";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Card, CardContent } from "@/components/ui/card";
-import { AddTracks } from "./add-tracks-dialog";
+import { AddTracksDialog } from "./AddTracksDialog";
 import PropTypes from "prop-types";
-import { DeleteItemDialog } from "./deleteItemDialog";
+import { DeleteItemDialog } from "./DeleteItemDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
@@ -221,12 +221,12 @@ export function TrackMatch({ trackMatch, id, view, instanceId }) {
         </ContextMenuSub>
         <ContextMenuSeparator />
 
-        <AddTracks trackMatch={trackMatch}>
+        <AddTracksDialog trackMatch={trackMatch}>
           <ContextMenuItem>
             <Pencil1Icon className="mr-2" />
             Edit
           </ContextMenuItem>
-        </AddTracks>
+        </AddTracksDialog>
         {playlistId && (
           <ContextMenuItem onClick={handleRemoveClick}>
             <MinusCircledIcon className="mr-2" />

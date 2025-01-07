@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { TrackMatch } from "../components/track-match";
-import { AddTracks } from "../components/add-tracks-dialog";
+import { TrackMatch } from "../components/TrackMatch";
+import { AddTracksDialog } from "../components/AddTracksDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPlaylistById } from "../store/playlistsSlice";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ export default function Playlist() {
           </TabsList>
           <Input type="text" placeholder="Search" />
           <div className="ml-auto">
-            <AddTracks>
+            <AddTracksDialog>
               <div className="relative">
                 <Button>
                   <PlusCircledIcon className="mr-2 h-4 w-4" />
@@ -54,7 +54,7 @@ export default function Playlist() {
                   />
                 )}
               </div>
-            </AddTracks>
+            </AddTracksDialog>
           </div>
         </div>
         <TabsContent value="cards" className="border-none p-0 outline-none">

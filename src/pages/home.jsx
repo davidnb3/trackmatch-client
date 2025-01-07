@@ -3,10 +3,10 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { AlbumArtwork } from "../components/album-artwork";
-import { PodcastEmptyPlaceholder } from "../components/podcast-empty-placeholder";
+import { AlbumArtwork } from "../components/AlbumArtwork";
+import { PodcastEmptyPlaceholder } from "../components/PodcastEmptyPlaceholder";
 import { listenNowAlbums, madeForYouAlbums } from "../data/albums";
-import { AddTracks } from "../components/add-tracks-dialog";
+import { AddTracksDialog } from "../components/AddTracksDialog";
 import { useSelector } from "react-redux";
 
 export default function Home() {
@@ -26,7 +26,7 @@ export default function Home() {
             </TabsTrigger>
           </TabsList>
           <div className="ml-auto">
-            <AddTracks>
+            <AddTracksDialog>
               <div className="relative">
                 <Button>
                   <PlusCircledIcon className="mr-2 h-4 w-4" />
@@ -43,7 +43,7 @@ export default function Home() {
                   />
                 )}
               </div>
-            </AddTracks>
+            </AddTracksDialog>
           </div>
         </div>
         <TabsContent value="music" className="border-none p-0 outline-none">

@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/context-menu";
 import PropTypes from "prop-types";
 
-import { DeleteItemDialog } from "./deleteItemDialog";
-import { EditPlaylistDialog } from "./editPlaylistDialog";
+import { DeleteItemDialog } from "./DeleteItemDialog";
+import { EditPlaylistDialog } from "./EditPlaylistDialog";
 import { useDroppable } from "@dnd-kit/core";
 
 PlaylistButton.propTypes = {

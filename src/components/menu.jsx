@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/menubar";
 
 import { useSelector } from "react-redux";
-import { ModeToggle } from "./mode-toggle.jsx";
+import { ModeToggle } from "./ModeToggle.jsx";
 
 export function Menu() {
   const user = useSelector((state) => state.user.user);

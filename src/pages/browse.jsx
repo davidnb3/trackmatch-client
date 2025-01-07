@@ -3,10 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
-import { TrackMatch } from "../components/track-match";
-import { AddTracks } from "../components/add-tracks-dialog";
+import { TrackMatch } from "../components/TrackMatch";
+import { AddTracksDialog } from "../components/AddTracksDialog";
 import { useSelector } from "react-redux";
-import { PagePagination } from "../components/page-pagination";
+import { PagePagination } from "../components/PagePagination";
 import { Input } from "@/components/ui/input";
 
 export default function Browse() {
@@ -28,7 +28,7 @@ export default function Browse() {
           </TabsList>
           <Input type="text" placeholder="Search" />
           <div className="ml-auto">
-            <AddTracks>
+            <AddTracksDialog>
               <div className="relative">
                 <Button>
                   <PlusCircledIcon className="mr-2 h-4 w-4" />
@@ -45,7 +45,7 @@ export default function Browse() {
                   />
                 )}
               </div>
-            </AddTracks>
+            </AddTracksDialog>
           </div>
         </div>
         <TabsContent value="cards" className="border-none p-0 outline-none">

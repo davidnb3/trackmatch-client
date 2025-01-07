@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { useState, useCallback } from "react";
-import { camelotNotationMajor, camelotNotationMinor } from "@/lib/utils";
+// import { camelotNotationMajor, camelotNotationMinor } from "@/lib/utils";
 import PropTypes from "prop-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ import {
 } from "../store/trackMatchesSlice";
 import { PlusCircledIcon, MinusCircledIcon } from "@radix-ui/react-icons";
 
-AddTracks.propTypes = {
+AddTracksDialog.propTypes = {
   trackMatch: PropTypes.shape({
     tracks: PropTypes.array,
     _id: PropTypes.string,
@@ -31,7 +31,7 @@ AddTracks.propTypes = {
   children: PropTypes.node,
 };
 
-export function AddTracks({ children, trackMatch }) {
+export function AddTracksDialog({ children, trackMatch }) {
   const dispatch = useDispatch();
   const [activeTrackIndex, setActiveTrackIndex] = useState(null);
   const [searchResults, setSearchResults] = useState([]);

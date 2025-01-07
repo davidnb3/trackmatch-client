@@ -3,12 +3,12 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { AddTracks } from "../components/add-tracks-dialog";
+import { AddTracksDialog } from "../components/AddTracksDialog";
 import { useEffect, useState } from "react";
 import { fetchTracks } from "../store/tracksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { TrashIcon } from "@radix-ui/react-icons";
-import { DeleteItemDialog } from "../components/deleteItemDialog";
+import { DeleteItemDialog } from "../components/DeleteItemDialog";
 import { tracksSlice } from "../store/tracksSlice";
 import useAuth from "@/hooks/useAuth";
 import {
@@ -84,7 +84,7 @@ export default function Library() {
       <div className="space-between flex items-center gap-4 lg:gap-8">
         <Input type="text" placeholder="Search" />
         <div className="ml-auto">
-          <AddTracks>
+          <AddTracksDialog>
             <div className="relative">
               <Button>
                 <PlusCircledIcon className="mr-2 h-4 w-4" />
@@ -101,7 +101,7 @@ export default function Library() {
                 />
               )}
             </div>
-          </AddTracks>
+          </AddTracksDialog>
         </div>
       </div>
 
