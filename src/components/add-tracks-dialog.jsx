@@ -41,7 +41,7 @@ export function AddTracks({ children, trackMatch }) {
         name: "",
         artist: "",
         artistSpotifyId: "",
-        key: "",
+        // key: "",
         cover: disc,
         uri: "",
       },
@@ -49,7 +49,7 @@ export function AddTracks({ children, trackMatch }) {
         name: "",
         artist: "",
         artistSpotifyId: "",
-        key: "",
+        // key: "",
         cover: disc,
         uri: "",
       },
@@ -84,7 +84,7 @@ export function AddTracks({ children, trackMatch }) {
         name: "",
         artist: "",
         artistSpotifyId: "",
-        key: "",
+        // key: "",
         cover: disc,
         uri: "",
       },
@@ -97,7 +97,7 @@ export function AddTracks({ children, trackMatch }) {
         name: "",
         artist: "",
         artistSpotifyId: "",
-        key: "",
+        // key: "",
         cover: disc,
         uri: "",
       },
@@ -105,7 +105,7 @@ export function AddTracks({ children, trackMatch }) {
         name: "",
         artist: "",
         artistSpotifyId: "",
-        key: "",
+        // key: "",
         cover: disc,
         uri: "",
       },
@@ -199,7 +199,7 @@ export function AddTracks({ children, trackMatch }) {
 
   const handleSelectResult = async (index, result) => {
     // Create a new copy of the tracks array
-    const key = await getTrackKey(result);
+    // const key = await getTrackKey(result);
 
     const newTracks = tracks.map((track, i) => {
       // If this is the track we want to modify, return a new object
@@ -209,7 +209,7 @@ export function AddTracks({ children, trackMatch }) {
           name: result.name,
           artist: result.artist,
           artistSpotifyId: result.artistSpotifyId,
-          key: key,
+          // key: key,
           cover: result.cover,
           uri: result.uri,
         };
@@ -224,35 +224,38 @@ export function AddTracks({ children, trackMatch }) {
     setSearchResults([]);
   };
 
-  const getTrackKey = async (selectedTrack) => {
-    try {
-      let response = await fetch(
-        `https://api.spotify.com/v1/audio-features/${selectedTrack.trackId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+  // const getTrackKey = async (selectedTrack) => {
+  //   try {
+  //     let response = await fetch(
+  //       `https://api.spotify.com/v1/audio-features/${selectedTrack.trackId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${accessToken}`,
+  //         },
+  //       }
+  //     );
 
-      const data = await response.json();
-      // Mode represents either major (1) or minor (0)
-      let mode = data.mode;
-      let camelotKey;
-      if (mode === 0) {
-        camelotKey = camelotNotationMinor[data.key];
-      } else if (mode === 1) {
-        camelotKey = camelotNotationMajor[data.key];
-      } else {
-        console.error("Invalid mode:", mode);
-      }
+  //     if (response.status === 403) {
+  //       console.log(response);
+  //     }
 
-      return camelotKey;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
+  //     const data = await response.json();
+  //     // Mode represents either major (1) or minor (0)
+  //     let mode = data.mode;
+  //     let camelotKey;
+  //     if (mode === 0) {
+  //       camelotKey = camelotNotationMinor[data.key];
+  //     } else if (mode === 1) {
+  //       camelotKey = camelotNotationMajor[data.key];
+  //     } else {
+  //       console.error("Invalid mode:", mode);
+  //     }
+
+  //     return camelotKey;
+  //   } catch (error) {
+  //     console.error("ERRORRRR", error);
+  //   }
+  // };
 
   const submitTrackMatch = (tracks) => {
     for (let track of tracks) {
@@ -299,8 +302,8 @@ export function AddTracks({ children, trackMatch }) {
             <div key={index} className="relative">
               <div
                 key={index}
-                className="grid grid-cols-7 items-center gap-4"
-                style={{ gridTemplateColumns: "auto 1fr 1fr 1fr 1fr 1fr 1fr" }}
+                className="grid grid-cols-6 items-center gap-4"
+                style={{ gridTemplateColumns: "auto 1fr 1fr 1fr 1fr 1fr" }}
               >
                 <img
                   src={track.cover}
@@ -341,7 +344,7 @@ export function AddTracks({ children, trackMatch }) {
                     }, 200);
                   }}
                 />
-                <Input
+                {/* <Input
                   id={`songKey${index + 1}`}
                   value={track.key}
                   type="text"
@@ -356,7 +359,7 @@ export function AddTracks({ children, trackMatch }) {
                       setSearchResults([]);
                     }, 200);
                   }}
-                />
+                /> */}
               </div>
               {activeTrackIndex === index && searchResults.length > 0 && (
                 <div

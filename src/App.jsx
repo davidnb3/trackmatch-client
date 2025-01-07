@@ -20,7 +20,7 @@ export default function App() {
   const [playlistId, setPlaylistId] = useState(null);
   const [trackMatch, setTrackMatch] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  const { hasAccessToken, accessToken, jwtToken } = useAuth();
+  const { hasAccessToken, jwtToken } = useAuth();
   const dispatch = useDispatch();
 
   const handleDragEnd = (event) => {
