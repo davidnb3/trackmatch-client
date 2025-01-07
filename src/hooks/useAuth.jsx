@@ -112,10 +112,13 @@ const useAuth = () => {
         }
 
         const data = await response.json();
+
         localStorage.setItem("spotifyAccessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         localStorage.setItem("expiresIn", data.expiresIn);
         setAccessToken(data.accessToken);
+        setRefreshToken(data.refreshToken);
+        setHasAccessToken(true);
         return data.accessToken;
       } catch (error) {
         console.error(error);
