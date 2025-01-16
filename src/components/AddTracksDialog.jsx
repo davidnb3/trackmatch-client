@@ -58,7 +58,7 @@ export function AddTracksDialog({ children, trackMatch }) {
   // eslint-disable-next-line no-unused-vars
   const [searchQuery, setSearchQuery] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { accessToken, refreshAccessToken, jwtToken } = useAuth();
+  const { accessToken, jwtToken } = useAuth();
 
   const openDialog = (event) => {
     event.preventDefault();
@@ -194,7 +194,7 @@ export function AddTracksDialog({ children, trackMatch }) {
         setSearchResults([]);
       }
     }, 500),
-    [accessToken, refreshAccessToken]
+    [accessToken]
   );
 
   const handleSelectResult = async (index, result) => {
