@@ -7,9 +7,7 @@ const useAuth = () => {
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("spotifyAccessToken")
   );
-
   const [jwtToken, setJwtToken] = useState(localStorage.getItem("jwtToken"));
-
   const [refreshToken, setRefreshToken] = useState(
     localStorage.getItem("refreshToken")
   );
@@ -74,23 +72,6 @@ const useAuth = () => {
       .catch((error) => console.error(error));
   };
 
-  useEffect(() => {
-    if (accessToken) {
-      fetchUserData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
-
-  useEffect(() => {
-    if (hasAccessToken) return;
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-
-    if (code) {
-      fetchSpotifyToken(code);
-    }
-  }, [hasAccessToken]);
-
   const refreshAccessToken = async () => {
     if (refreshToken) {
       const body = {
@@ -126,6 +107,24 @@ const useAuth = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (!hasAccessToken) return;
+
+    fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (hasAccessToken) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    if (code) {
+      fetchSpotifyToken(code);
+    }
+  }, [hasAccessToken]);
 
   return {
     accessToken,
