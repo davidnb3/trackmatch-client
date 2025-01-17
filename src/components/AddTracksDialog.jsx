@@ -259,7 +259,7 @@ export function AddTracksDialog({ children, trackMatch }) {
 
   const submitTrackMatch = (tracks) => {
     for (let track of tracks) {
-      if (!track.name || !track.artist || !track.key || !track.cover) {
+      if (!track.name || !track.artist) {
         alert("Please fill in all fields.");
         return;
       }
