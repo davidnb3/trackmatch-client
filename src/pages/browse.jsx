@@ -34,16 +34,6 @@ export default function Browse() {
                   <PlusCircledIcon className="mr-2 h-4 w-4" />
                   Add TrackMatch
                 </Button>
-                {pendingTracks[0].name !== "" && (
-                  <div
-                    className="notification-badge absolute h-4 w-4 rounded-full bg-primary-500 animate-ping"
-                    style={{
-                      backgroundImage: `url(${
-                        pendingTracks[pendingTracks.length - 1].cover
-                      })`,
-                    }}
-                  />
-                )}
               </div>
             </AddTracksDialog>
           </div>
